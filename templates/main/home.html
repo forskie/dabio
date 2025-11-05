@@ -1,0 +1,69 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Современная одежда</h1>
+        <p>Откройте для себя новую коллекцию стильной и качественной одежды</p>
+        <a href="{% url 'main:product_list' %}" class="btn btn-primary">Смотреть каталог</a>
+    </div>
+    <div class="hero-image">
+        <!-- Add your hero image here -->
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-products">
+    <div class="container">
+        <h2>Популярные товары</h2>
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                <div class="product-image placeholder">No Image</div>
+                {% endif %}
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-price">{{ product.price }} ₽</p>
+                    <a href="{% url 'main:product_detail' product.slug %}" class="btn btn-outline">Подробнее</a>
+                </div>
+            </div>
+            {% empty %}
+            <p>Товары временно отсутствуют</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">🚚</div>
+                <h3>Бесплатная доставка</h3>
+                <p>При заказе от 5000 ₽</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">↩️</div>
+                <h3>Возврат</h3>
+                <p>В течение 14 дней</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Безопасная оплата</h3>
+                <p>Гарантия безопасности</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📞</div>
+                <h3>Поддержка</h3>
+                <p>Помощь 24/7</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

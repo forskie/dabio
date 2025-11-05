@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Товары - Dabio{% endblock %}
+
+{% block content %}
+<div class="products-page">
+    <div class="page-header">
+        <h1>Наши товары</h1>
+        <p>Лучшая подборка современной одежды</p>
+    </div>
+
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            {% else %}
+            <div class="product-image placeholder">No Image</div>
+            {% endif %}
+            
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p class="product-price">{{ product.price }} ₽</p>
+                <a href="{% url 'main:product_detail' product.slug %}" class="btn btn-outline">Подробнее</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-products">
+            <h3>Товары не найдены</h3>
+            <p>Попробуйте зайти позже</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cta-section">
+        <h2>Хотите увидеть больше?</h2>
+        <p>Посетите наш полный каталог товаров</p>
+        <a href="{% url 'main:product_list' %}" class="btn btn-primary">Перейти в каталог</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}

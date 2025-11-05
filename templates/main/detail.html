@@ -1,0 +1,136 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ product.name }} - Dabio{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="breadcrumb">
+        <a href="{% url 'main:home' %}">Главная</a> / 
+        <a href="{% url 'main:product_list' %}">Каталог</a> / 
+        {% if product.category %}
+        <a href="{% url 'main:product_list_by_category' product.category.slug %}">{{ product.category.name }}</a> / 
+        {% endif %}
+        <span>{{ product.name }}</span>
+    </div>
+
+    <div class="product-layout">
+        <!-- Product Images -->
+        <div class="product-gallery">
+            <div class="main-image">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainImage">
+                {% else %}
+                <div class="image-placeholder">No Image</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+            <h1>{{ product.name }}</h1>
+            
+            <div class="product-meta">
+                {% if product.category %}
+                <span class="category">Категория: {{ product.category.name }}</span>
+                {% endif %}
+            </div>
+
+            <div class="product-price-section">
+                {% if product.discount %}
+                <div class="price-old">{{ product.price }} ₽</div>
+                <div class="price-new">{{ product.get_discounted_price }} ₽</div>
+                <div class="discount-badge">-{{ product.discount }}%</div>
+                {% else %}
+                <div class="price">{{ product.price }} ₽</div>
+                {% endif %}
+            </div>
+
+            <div class="product-description">
+                <h3>Описание</h3>
+                <p>{{ product.description|linebreaks }}</p>
+            </div>
+
+            {% if product.product_size %}
+            <div class="product-size">
+                <h3>Размер</h3>
+                <p>{{ product.product_size }}</p>
+            </div>
+            {% endif %}
+
+            {% if product.color %}
+            <div class="product-color">
+                <h3>Цвет</h3>
+                <p>{{ product.color }}</p>
+            </div>
+            {% endif %}
+
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <label for="quantity">Количество:</label>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <input type="number" id="quantity" value="1" min="1" max="10">
+                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-large add-to-cart" data-product-id="{{ product.id }}">
+                    Добавить в корзину
+                </button>
+
+                <button class="btn btn-outline btn-large">
+                    ❤️ В избранное
+                </button>
+            </div>
+
+            <div class="product-features">
+                <div class="feature">
+                    <span class="feature-icon">🚚</span>
+                    <span>Бесплатная доставка от 5000 ₽</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">↩️</span>
+                    <span>Возврат в течение 14 дней</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🔒</span>
+                    <span>Безопасная оплата</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    function increaseQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue < 10) {
+            quantityInput.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    // Add to cart functionality
+    document.querySelector('.add-to-cart')?.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+        const quantity = document.getElementById('quantity').value;
+        
+        // Add your cart logic here
+        console.log(`Adding product ${productId} with quantity ${quantity} to cart`);
+        
+        // Show success message
+        alert('Товар добавлен в корзину!');
+    });
+</script>
+{% endblock %}

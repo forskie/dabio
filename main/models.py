@@ -29,7 +29,7 @@ class ProductSize(models.Model):
     stock =  models.PositiveIntegerField(default=0)
     
     def __str__(self):
-        return f"{self.name} ({self.stock} in stock) for {self.product.name}"
+        return f"{self.size.name} ({self.stock} in stock) for {self.product.name}"
     
     
 
@@ -46,6 +46,7 @@ class Product(models.Model):
     main_image = models.ImageField(upload_to='products/main')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+    available = models.BooleanField(default=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -53,7 +54,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return self.title
+        return self.name
     
     
 class ProductImage(models.Model):

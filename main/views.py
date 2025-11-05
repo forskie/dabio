@@ -11,7 +11,7 @@ def product_detail(request, slug):
     return render(request, 'main/detail.html', {'product': product})
 
 def home(request):
-    return render(request, 'main/base.html')
+    return render(request, 'main/home.html')
 
 
 def product_list(request, category_slug = None):
