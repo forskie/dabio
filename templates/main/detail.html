@@ -3,134 +3,700 @@
 {% block title %}{{ product.name }} - Dabio{% endblock %}
 
 {% block content %}
-<div class="product-detail">
-    <div class="breadcrumb">
-        <a href="{% url 'main:home' %}">Главная</a> / 
-        <a href="{% url 'main:product_list' %}">Каталог</a> / 
-        {% if product.category %}
-        <a href="{% url 'main:product_list_by_category' product.category.slug %}">{{ product.category.name }}</a> / 
-        {% endif %}
-        <span>{{ product.name }}</span>
+<div class="product-detail-container">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <span>→</span>
+        <a href="{% url 'main:product_list' %}">Каталог</a>
+        <span>→</span>
+        <a href="{% url 'main:product_list' product.category.slug %}">{{ product.category.name }}</a>
+        <span>→</span>
+        <span class="current">{{ product.name }}</span>
     </div>
 
-    <div class="product-layout">
+    <!-- Product Detail -->
+    <div class="product-detail">
         <!-- Product Images -->
         <div class="product-gallery">
             <div class="main-image">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainImage">
+                {% if product.main_image %}
+                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" id="mainImage">
+                {% elif product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainImage">
                 {% else %}
-                <div class="image-placeholder">No Image</div>
+                    <div class="image-placeholder">
+                        <span>👕</span>
+                    </div>
+                {% endif %}
+                {% if product.discount %}
+                    <span class="detail-badge discount">-{{ product.discount }}%</span>
+                {% endif %}
+                {% if product.is_new %}
+                    <span class="detail-badge new">Новинка</span>
                 {% endif %}
             </div>
+            
+            <!-- Thumbnail Gallery -->
+            {% if product.images.all %}
+            <div class="thumbnail-gallery">
+                {% if product.main_image %}
+                    <div class="thumbnail active" onclick="changeMainImage('{{ product.main_image.url }}', this)">
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                    </div>
+                {% endif %}
+                {% for image in product.images.all %}
+                    <div class="thumbnail" onclick="changeMainImage('{{ image.image.url }}', this)">
+                        <img src="{{ image.image.url }}" alt="Additional image for {{ product.name }}">
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
 
         <!-- Product Info -->
-        <div class="product-info">
-            <h1>{{ product.name }}</h1>
-            
-            <div class="product-meta">
-                {% if product.category %}
-                <span class="category">Категория: {{ product.category.name }}</span>
-                {% endif %}
-            </div>
+        <div class="product-details">
+            <div class="product-header">
+                <span class="product-category-badge">{{ product.category.name }}</span>
+                <h1 class="product-title">{{ product.name }}</h1>
+                
+                <div class="product-rating">
+                    <div class="stars">★★★★★</div>
+                    <span class="rating-text">(4.5)</span>
+                </div>
 
-            <div class="product-price-section">
-                {% if product.discount %}
-                <div class="price-old">{{ product.price }} ₽</div>
-                <div class="price-new">{{ product.get_discounted_price }} ₽</div>
-                <div class="discount-badge">-{{ product.discount }}%</div>
-                {% else %}
-                <div class="price">{{ product.price }} ₽</div>
-                {% endif %}
+                <div class="product-price-block">
+                    {% if product.discount %}
+                        <div class="price-row">
+                            <span class="price-old">{{ product.price }} TJS</span>
+                            <span class="discount-badge">-{{ product.discount }}%</span>
+                        </div>
+                        <div class="price-current">{{ product.discounted_price }} TJS</div>
+                        <p class="savings">Вы экономите {{ product.savings }} TJS</p>
+                    {% else %}
+                        <div class="price-current">{{ product.price }} TJS</div>
+                    {% endif %}
+                </div>
             </div>
 
             <div class="product-description">
                 <h3>Описание</h3>
-                <p>{{ product.description|linebreaks }}</p>
+                <p>{{ product.description }}</p>
             </div>
 
-            {% if product.product_size %}
-            <div class="product-size">
-                <h3>Размер</h3>
-                <p>{{ product.product_size }}</p>
-            </div>
-            {% endif %}
+            <!-- Options -->
+            <div class="product-options">
+                {% if product.product_sizes.all %}
+                <div class="option-group">
+                    <label>Размер</label>
+                    <div class="size-options">
+                        {% for product_size in product.product_sizes.all %}
+                            <button class="size-btn" data-stock="{{ product_size.stock }}">
+                                {{ product_size.size.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                    <a href="#" class="size-guide-link">📏 Таблица размеров</a>
+                </div>
+                {% endif %}
 
-            {% if product.color %}
-            <div class="product-color">
-                <h3>Цвет</h3>
-                <p>{{ product.color }}</p>
-            </div>
-            {% endif %}
-
-            <div class="product-actions">
-                <div class="quantity-selector">
-                    <label for="quantity">Количество:</label>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                        <input type="number" id="quantity" value="1" min="1" max="10">
-                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                {% if product.color %}
+                <div class="option-group">
+                    <label>Цвет</label>
+                    <div class="color-info">
+                        <span class="color-display">{{ product.color }}</span>
                     </div>
                 </div>
+                {% endif %}
 
-                <button class="btn btn-primary btn-large add-to-cart" data-product-id="{{ product.id }}">
-                    Добавить в корзину
+                <div class="option-group">
+                    <label>Количество</label>
+                    <div class="quantity-selector">
+                        <button class="qty-btn" onclick="decrementQty()">−</button>
+                        <input type="number" id="quantity" value="1" min="1" max="10" readonly>
+                        <button class="qty-btn" onclick="incrementQty()">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="product-actions">
+                <button class="btn-add-to-cart">
+                    🛒 Добавить в корзину
                 </button>
-
-                <button class="btn btn-outline btn-large">
-                    ❤️ В избранное
+                <button class="btn-wishlist">
+                    ❤️
                 </button>
             </div>
 
-            <div class="product-features">
-                <div class="feature">
-                    <span class="feature-icon">🚚</span>
-                    <span>Бесплатная доставка от 5000 ₽</span>
+            <!-- Additional Info -->
+            <div class="product-info-blocks">
+                <div class="info-block">
+                    <div class="info-icon">🚚</div>
+                    <div class="info-content">
+                        <strong>Бесплатная доставка</strong>
+                        <p>При заказе от 500 TJS</p>
+                    </div>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">↩️</span>
-                    <span>Возврат в течение 14 дней</span>
+                <div class="info-block">
+                    <div class="info-icon">↩️</div>
+                    <div class="info-content">
+                        <strong>Легкий возврат</strong>
+                        <p>30 дней на возврат</p>
+                    </div>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">🔒</span>
-                    <span>Безопасная оплата</span>
+                <div class="info-block">
+                    <div class="info-icon">✓</div>
+                    <div class="info-content">
+                        <strong>Гарантия качества</strong>
+                        <p>Только оригинальные товары</p>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Specifications -->
+            <div class="specifications">
+                <h3>Характеристики</h3>
+                <table class="specs-table">
+                    <tr>
+                        <td>Артикул</td>
+                        <td><strong>{{ product.id }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Категория</td>
+                        <td><strong>{{ product.category.name }}</strong></td>
+                    </tr>
+                    {% if product.color %}
+                    <tr>
+                        <td>Цвет</td>
+                        <td><strong>{{ product.color }}</strong></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td>Материал</td>
+                        <td><strong>Хлопок 100%</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Страна</td>
+                        <td><strong>Таджикистан</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Наличие</td>
+                        <td>
+                            {% if product.available %}
+                                <strong style="color: #10b981;">В наличии</strong>
+                            {% else %}
+                                <strong style="color: #ef4444;">Нет в наличии</strong>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
+
 </div>
-{% endblock %}
 
+<style>
+    .product-detail-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
 
-{% block extra_js %}
+    .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        color: #666;
+        flex-wrap: wrap;
+    }
+
+    .breadcrumbs a {
+        color: #666;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .breadcrumbs a:hover {
+        color: #6366f1;
+    }
+
+    .breadcrumbs .current {
+        color: #0a0a0a;
+        font-weight: 600;
+    }
+
+    /* Product Detail Layout */
+    .product-detail {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        margin-bottom: 4rem;
+    }
+
+    /* Gallery */
+    .product-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .main-image {
+        position: relative;
+        width: 100%;
+        height: 600px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .main-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10rem;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+    }
+
+    .detail-badge {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 700;
+        z-index: 10;
+    }
+
+    .detail-badge.discount {
+        background: #ef4444;
+        color: white;
+    }
+
+    .detail-badge.new {
+        background: #10b981;
+        color: white;
+        top: 4.5rem;
+    }
+
+    .thumbnail-gallery {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+    }
+
+    .thumbnail {
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s;
+        flex-shrink: 0;
+    }
+
+    .thumbnail.active {
+        border-color: #6366f1;
+    }
+
+    .thumbnail:hover {
+        border-color: #6366f1;
+        opacity: 0.8;
+    }
+
+    .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Product Details */
+    .product-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .product-category-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #f5f5ff;
+        color: #6366f1;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .product-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #0a0a0a;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .product-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stars {
+        color: #fbbf24;
+        font-size: 1.2rem;
+    }
+
+    .rating-text {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .product-price-block {
+        padding: 1.5rem;
+        background: #f5f5ff;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+    }
+
+    .price-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .price-old {
+        font-size: 1.2rem;
+        color: #999;
+        text-decoration: line-through;
+    }
+
+    .discount-badge {
+        padding: 0.25rem 0.75rem;
+        background: #ef4444;
+        color: white;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .price-current {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #6366f1;
+        line-height: 1;
+    }
+
+    .savings {
+        color: #10b981;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .product-description h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #0a0a0a;
+    }
+
+    .product-description p {
+        color: #666;
+        line-height: 1.8;
+    }
+
+    /* Options */
+    .product-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 2rem 0;
+        border-top: 2px solid #e5e5e5;
+        border-bottom: 2px solid #e5e5e5;
+    }
+
+    .option-group label {
+        display: block;
+        font-weight: 700;
+        color: #0a0a0a;
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .size-options {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .size-btn {
+        min-width: 60px;
+        padding: 0.75rem 1.25rem;
+        border: 2px solid #e5e5e5;
+        background: white;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .size-btn:hover,
+    .size-btn.active {
+        border-color: #6366f1;
+        color: #6366f1;
+        background: #f5f5ff;
+    }
+
+    .size-guide-link {
+        display: inline-block;
+        margin-top: 0.75rem;
+        color: #6366f1;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .color-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .color-display {
+        padding: 0.75rem 1.5rem;
+        background: #f5f5f5;
+        border-radius: 10px;
+        font-weight: 600;
+        color: #0a0a0a;
+    }
+
+    .quantity-selector {
+        display: inline-flex;
+        border: 2px solid #e5e5e5;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .qty-btn {
+        width: 50px;
+        height: 50px;
+        border: none;
+        background: white;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .qty-btn:hover {
+        background: #f5f5f5;
+    }
+
+    #quantity {
+        width: 80px;
+        height: 50px;
+        border: none;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    /* Actions */
+    .product-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-add-to-cart {
+        flex: 1;
+        padding: 1.25rem 2rem;
+        background: #6366f1;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-add-to-cart:hover {
+        background: #4f46e5;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-wishlist {
+        width: 60px;
+        height: 60px;
+        border: 2px solid #e5e5e5;
+        background: white;
+        border-radius: 12px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-wishlist:hover {
+        border-color: #ef4444;
+        color: #ef4444;
+        background: #fff5f5;
+    }
+
+    /* Info Blocks */
+    .product-info-blocks {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .info-block {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f5f5f5;
+        border-radius: 12px;
+    }
+
+    .info-icon {
+        font-size: 2rem;
+    }
+
+    .info-content strong {
+        display: block;
+        color: #0a0a0a;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-content p {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0;
+    }
+
+    /* Specifications */
+    .specifications h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #0a0a0a;
+    }
+
+    .specs-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .specs-table tr {
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .specs-table td {
+        padding: 1rem 0;
+    }
+
+    .specs-table td:first-child {
+        color: #666;
+        width: 40%;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .product-detail {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .main-image {
+            height: 500px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-title {
+            font-size: 2rem;
+        }
+
+        .price-current {
+            font-size: 2.5rem;
+        }
+
+        .main-image {
+            height: 400px;
+        }
+
+        .product-actions {
+            flex-direction: column;
+        }
+
+        .btn-wishlist {
+            width: 100%;
+        }
+    }
+</style>
+
 <script>
-    function increaseQuantity() {
-        const quantityInput = document.getElementById('quantity');
-        const currentValue = parseInt(quantityInput.value);
-        if (currentValue < 10) {
-            quantityInput.value = currentValue + 1;
+    // Change main image when thumbnail is clicked
+    function changeMainImage(imageUrl, thumbnailElement) {
+        const mainImage = document.getElementById('mainImage');
+        mainImage.src = imageUrl;
+        
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        // Add active class to clicked thumbnail
+        thumbnailElement.classList.add('active');
+    }
+
+    // Quantity controls
+    function incrementQty() {
+        const input = document.getElementById('quantity');
+        if (parseInt(input.value) < parseInt(input.max)) {
+            input.value = parseInt(input.value) + 1;
         }
     }
 
-    function decreaseQuantity() {
-        const quantityInput = document.getElementById('quantity');
-        const currentValue = parseInt(quantityInput.value);
-        if (currentValue > 1) {
-            quantityInput.value = currentValue - 1;
+    function decrementQty() {
+        const input = document.getElementById('quantity');
+        if (parseInt(input.value) > parseInt(input.min)) {
+            input.value = parseInt(input.value) - 1;
         }
     }
 
-    // Add to cart functionality
-    document.querySelector('.add-to-cart')?.addEventListener('click', function() {
-        const productId = this.dataset.productId;
+    // Size selection
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Add to cart
+    document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
         const quantity = document.getElementById('quantity').value;
-        
-        // Add your cart logic here
-        console.log(`Adding product ${productId} with quantity ${quantity} to cart`);
-        
-        // Show success message
-        alert('Товар добавлен в корзину!');
+        alert(`Добавлено ${quantity} шт. в корзину!`);
+    });
+
+    // Wishlist
+    document.querySelector('.btn-wishlist').addEventListener('click', function() {
+        this.style.color = this.style.color === 'rgb(239, 68, 68)' ? '' : '#ef4444';
+        alert('Добавлено в избранное!');
     });
 </script>
 {% endblock %}

@@ -1,45 +1,423 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Товары - Dabio{% endblock %}
+{% block title %}Новинки - Dabio{% endblock %}
 
 {% block content %}
-<div class="products-page">
-    <div class="page-header">
-        <h1>Наши товары</h1>
-        <p>Лучшая подборка современной одежды</p>
+<div class="products-home-container">
+    <div class="products-header">
+        <h1>Новые поступления</h1>
+        <p>Свежие модели, которые уже полюбились нашим клиентам</p>
     </div>
 
-    <div class="products-grid">
-        {% for product in products %}
-        <div class="product-card">
-            {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-            {% else %}
-            <div class="product-image placeholder">No Image</div>
-            {% endif %}
-            
-            <div class="product-info">
-                <h3>{{ product.name }}</h3>
-                <p class="product-price">{{ product.price }} ₽</p>
-                <a href="{% url 'main:product_detail' product.slug %}" class="btn btn-outline">Подробнее</a>
+    <div class="products-showcase">
+        {% if products %}
+            {% for product in products %}
+            <div class="showcase-card">
+                <a href="{% url 'main:product_detail' product.slug %}" class="showcase-link">
+                    <div class="showcase-image">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                        {% elif product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="showcase-placeholder">
+                                <span>👕</span>
+                            </div>
+                        {% endif %}
+                        
+                        {% if product.discount %}
+                            <span class="showcase-badge discount">-{{ product.discount }}%</span>
+                        {% endif %}
+                        {% if product.is_new %}
+                            <span class="showcase-badge new">New</span>
+                        {% endif %}
+                        
+                        <div class="showcase-overlay">
+                            <button class="quick-view-btn">Быстрый просмотр</button>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-info">
+                        <span class="showcase-category">{{ product.category.name }}</span>
+                        <h3 class="showcase-title">{{ product.name }}</h3>
+                        <p class="showcase-description">{{ product.description|truncatewords:15 }}</p>
+                        
+                        <div class="showcase-footer">
+                            <div class="showcase-price">
+                                {% if product.discount %}
+                                    <span class="price-discounted">
+                                        <span class="price-old">{{ product.price }} TJS</span>
+                                        <span class="price-new">{{ product.discounted_price }} TJS</span>
+                                    </span>
+                                {% else %}
+                                    <span class="price-new">{{ product.price }} TJS</span>
+                                {% endif %}
+                            </div>
+                            
+                            <button class="btn-add-to-cart-mini" onclick="addToCartQuick(event, {{ product.id }})">
+                                <span>🛒</span>
+                            </button>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
-        {% empty %}
-        <div class="no-products">
-            <h3>Товары не найдены</h3>
-            <p>Попробуйте зайти позже</p>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="no-products">
+                <div class="no-products-icon">📦</div>
+                <h3>Товары временно отсутствуют</h3>
+                <p>Мы работаем над пополнением ассортимента</p>
+            </div>
+        {% endif %}
     </div>
 
-    <div class="cta-section">
-        <h2>Хотите увидеть больше?</h2>
-        <p>Посетите наш полный каталог товаров</p>
-        <a href="{% url 'main:product_list' %}" class="btn btn-primary">Перейти в каталог</a>
+    <div class="view-all-section">
+        <a href="{% url 'main:product_list' %}" class="btn-view-all">
+            Смотреть весь каталог →
+        </a>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_css %}
+<style>
+    .products-home-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 4rem 1rem;
+    }
 
+    .products-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .products-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #0a0a0a;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .products-header p {
+        font-size: 1.2rem;
+        color: #666;
+    }
+
+    .products-showcase {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .showcase-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .showcase-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .showcase-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .showcase-image {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: #f5f5f5;
+        overflow: hidden;
+    }
+
+    .showcase-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .showcase-card:hover .showcase-image img {
+        transform: scale(1.1);
+    }
+
+    .showcase-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 8rem;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+    }
+
+    .showcase-badge {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+    }
+
+    .showcase-badge.discount {
+        background: rgba(239, 68, 68, 0.95);
+        color: white;
+    }
+
+    .showcase-badge.new {
+        background: rgba(16, 185, 129, 0.95);
+        color: white;
+        top: 4rem;
+    }
+
+    .showcase-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .showcase-card:hover .showcase-overlay {
+        opacity: 1;
+    }
+
+    .quick-view-btn {
+        padding: 1rem 2rem;
+        background: white;
+        color: #0a0a0a;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transform: translateY(20px);
+        transition: all 0.3s;
+    }
+
+    .showcase-card:hover .quick-view-btn {
+        transform: translateY(0);
+    }
+
+    .quick-view-btn:hover {
+        background: #6366f1;
+        color: white;
+    }
+
+    .showcase-info {
+        padding: 2rem;
+    }
+
+    .showcase-category {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: #f5f5ff;
+        color: #6366f1;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+
+    .showcase-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0a0a0a;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .showcase-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .showcase-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.5rem;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .showcase-price {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .price-discounted {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .price-old {
+        font-size: 1rem;
+        color: #999;
+        text-decoration: line-through;
+    }
+
+    .price-new {
+        font-size: 1.8rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .btn-add-to-cart-mini {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-add-to-cart-mini:hover {
+        transform: scale(1.1) rotate(10deg);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    }
+
+    .no-products {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .no-products-icon {
+        font-size: 6rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .no-products h3 {
+        font-size: 2rem;
+        color: #0a0a0a;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-products p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .view-all-section {
+        text-align: center;
+        margin-top: 4rem;
+    }
+
+    .btn-view-all {
+        display: inline-block;
+        padding: 1.25rem 3rem;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-view-all:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .products-showcase {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .products-header h1 {
+            font-size: 2.5rem;
+        }
+
+        .products-showcase {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .showcase-image {
+            height: 350px;
+        }
+
+        .showcase-title {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .products-header h1 {
+            font-size: 2rem;
+        }
+
+        .showcase-image {
+            height: 300px;
+        }
+
+        .showcase-info {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    function addToCartQuick(event, productId) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        console.log('Adding product to cart:', productId);
+        
+        // Анимация добавления
+        const btn = event.currentTarget;
+        btn.style.transform = 'scale(1.3) rotate(360deg)';
+        
+        setTimeout(() => {
+            btn.style.transform = '';
+            alert('Товар добавлен в корзину! 🎉');
+        }, 300);
+    }
+ 
+    // Quick view
+    document.querySelectorAll('.quick-view-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Здесь можно открыть модальное окно с быстрым просмотром
+            console.log('Quick view clicked');
+        });
+    });
+</script>
 {% endblock %}
