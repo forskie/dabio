@@ -1,0 +1,83 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+.env/
+env/
+.venv/
+
+# -------------------------
+# Django
+# -------------------------
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+static/
+local_settings.py
+
+# Django collectstatic
+/staticfiles/
+/static/
+
+# -------------------------
+# Environment & secrets
+# -------------------------
+.env
+*.env
+.env.*
+.envrc
+.env_backup
+
+# -------------------------
+# IDEs
+# -------------------------
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# -------------------------
+# OS system files
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Migrations – optional!
+# -------------------------
+# Если не хочешь игнорировать миграции, удали весь блок.
+# migrations/
+# */migrations/*
+# !*/migrations/__init__.py
+
+# -------------------------
+# Bytecode
+# -------------------------
+*.pyc
+*.pyo
+*.pyd
+
+# -------------------------
+# Testing
+# -------------------------
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+.tox/
+.cache/
