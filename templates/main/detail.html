@@ -26,14 +26,17 @@
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainImage">
                 {% else %}
                     <div class="image-placeholder">
-                        <span>👕</span>
+                        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
                     </div>
                 {% endif %}
                 {% if product.discount %}
                     <span class="detail-badge discount">-{{ product.discount }}%</span>
                 {% endif %}
                 {% if product.is_new %}
-                    <span class="detail-badge new">Новинка</span>
+                    <span class="detail-badge new">NEW</span>
                 {% endif %}
             </div>
             
@@ -61,7 +64,23 @@
                 <h1 class="product-title">{{ product.name }}</h1>
                 
                 <div class="product-rating">
-                    <div class="stars">★★★★★</div>
+                    <div class="stars">
+                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <svg class="star-icon half" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    </div>
                     <span class="rating-text">(4.5)</span>
                 </div>
 
@@ -81,72 +100,122 @@
 
             <div class="product-description">
                 <h3>Описание</h3>
-                <p>{{ product.description }}</p>
+                <p>{{ product.description|linebreaks }}</p>
             </div>
 
-            <!-- Options -->
-            <div class="product-options">
-                {% if product.product_sizes.all %}
-                <div class="option-group">
-                    <label>Размер</label>
-                    <div class="size-options">
-                        {% for product_size in product.product_sizes.all %}
-                            <button class="size-btn" data-stock="{{ product_size.stock }}">
-                                {{ product_size.size.name }}
+            <!-- Add to Cart Form -->
+            <form action="{% url 'cart:cart_add' product.id %}" method="post" id="addToCartForm">
+                {% csrf_token %}
+                
+                <!-- Options -->
+                <div class="product-options">
+                    {% if product.product_sizes.all %}
+                    <div class="option-group">
+                        <label>Размер</label>
+                        <div class="size-options">
+                            {% for product_size in product.product_sizes.all %}
+                                <button type="button" class="size-btn" data-stock="{{ product_size.stock }}" {% if product_size.stock == 0 %}disabled{% endif %}>
+                                    {{ product_size.size.name }}
+                                    {% if product_size.stock == 0 %}
+                                        <span class="out-of-stock-label">Нет в наличии</span>
+                                    {% endif %}
+                                </button>
+                            {% endfor %}
+                        </div>
+                        <a href="#" class="size-guide-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Таблица размеров
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% if product.color %}
+                    <div class="option-group">
+                        <label>Цвет</label>
+                        <div class="color-info">
+                            <span class="color-display">{{ product.color }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="option-group">
+                        <label>Количество</label>
+                        <div class="quantity-selector">
+                            <button type="button" class="qty-btn" onclick="decrementQty()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
                             </button>
-                        {% endfor %}
-                    </div>
-                    <a href="#" class="size-guide-link">📏 Таблица размеров</a>
-                </div>
-                {% endif %}
-
-                {% if product.color %}
-                <div class="option-group">
-                    <label>Цвет</label>
-                    <div class="color-info">
-                        <span class="color-display">{{ product.color }}</span>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10" readonly>
+                            <input type="hidden" name="override" value="False">
+                            <button type="button" class="qty-btn" onclick="incrementQty()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                {% endif %}
 
-                <div class="option-group">
-                    <label>Количество</label>
-                    <div class="quantity-selector">
-                        <button class="qty-btn" onclick="decrementQty()">−</button>
-                        <input type="number" id="quantity" value="1" min="1" max="10" readonly>
-                        <button class="qty-btn" onclick="incrementQty()">+</button>
-                    </div>
+                <!-- Actions -->
+                <div class="product-actions">
+                    <button type="submit" class="btn-add-to-cart">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span class="btn-text">Добавить в корзину</span>
+                    </button>
+                    <button type="button" class="btn-wishlist" id="wishlistBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </button>
                 </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="product-actions">
-                <button class="btn-add-to-cart">
-                    🛒 Добавить в корзину
-                </button>
-                <button class="btn-wishlist">
-                    ❤️
-                </button>
-            </div>
+            </form>
 
             <!-- Additional Info -->
             <div class="product-info-blocks">
                 <div class="info-block">
-                    <div class="info-icon">🚚</div>
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                    </div>
                     <div class="info-content">
                         <strong>Бесплатная доставка</strong>
                         <p>При заказе от 500 TJS</p>
                     </div>
                 </div>
                 <div class="info-block">
-                    <div class="info-icon">↩️</div>
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                    </div>
                     <div class="info-content">
                         <strong>Легкий возврат</strong>
                         <p>30 дней на возврат</p>
                     </div>
                 </div>
                 <div class="info-block">
-                    <div class="info-icon">✓</div>
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
                     <div class="info-content">
                         <strong>Гарантия качества</strong>
                         <p>Только оригинальные товары</p>
@@ -194,7 +263,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <style>
@@ -266,8 +334,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10rem;
         background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+        color: #999;
     }
 
     .detail-badge {
@@ -276,9 +344,10 @@
         right: 1.5rem;
         padding: 0.75rem 1.5rem;
         border-radius: 25px;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-weight: 700;
         z-index: 10;
+        letter-spacing: 0.5px;
     }
 
     .detail-badge.discount {
@@ -358,13 +427,24 @@
     }
 
     .stars {
+        display: flex;
+        gap: 0.25rem;
         color: #fbbf24;
-        font-size: 1.2rem;
+    }
+
+    .star-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .star-icon.half {
+        opacity: 0.5;
     }
 
     .rating-text {
         color: #666;
         font-size: 0.9rem;
+        margin-left: 0.5rem;
     }
 
     .product-price-block {
@@ -445,6 +525,7 @@
     }
 
     .size-btn {
+        position: relative;
         min-width: 60px;
         padding: 0.75rem 1.25rem;
         border: 2px solid #e5e5e5;
@@ -455,20 +536,40 @@
         transition: all 0.3s;
     }
 
-    .size-btn:hover,
+    .size-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f5f5f5;
+    }
+
+    .size-btn:not(:disabled):hover,
     .size-btn.active {
         border-color: #6366f1;
         color: #6366f1;
         background: #f5f5ff;
     }
 
+    .out-of-stock-label {
+        display: block;
+        font-size: 0.7rem;
+        color: #ef4444;
+        margin-top: 0.25rem;
+    }
+
     .size-guide-link {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
         margin-top: 0.75rem;
         color: #6366f1;
         text-decoration: none;
         font-weight: 600;
         font-size: 0.9rem;
+        transition: color 0.3s;
+    }
+
+    .size-guide-link:hover {
+        color: #4f46e5;
     }
 
     .color-info {
@@ -501,6 +602,9 @@
         font-weight: 700;
         cursor: pointer;
         transition: background 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .qty-btn:hover {
@@ -533,6 +637,10 @@
         font-weight: 700;
         cursor: pointer;
         transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
     }
 
     .btn-add-to-cart:hover {
@@ -541,21 +649,42 @@
         box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     }
 
+    .btn-add-to-cart svg {
+        flex-shrink: 0;
+    }
+
     .btn-wishlist {
         width: 60px;
         height: 60px;
         border: 2px solid #e5e5e5;
         background: white;
         border-radius: 12px;
-        font-size: 1.5rem;
         cursor: pointer;
         transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
     }
 
     .btn-wishlist:hover {
         border-color: #ef4444;
         color: #ef4444;
         background: #fff5f5;
+    }
+
+    .btn-wishlist.active {
+        border-color: #ef4444;
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-wishlist svg {
+        transition: all 0.3s;
+    }
+
+    .btn-wishlist.active svg {
+        fill: white;
     }
 
     /* Info Blocks */
@@ -574,7 +703,8 @@
     }
 
     .info-icon {
-        font-size: 2rem;
+        color: #6366f1;
+        flex-shrink: 0;
     }
 
     .info-content strong {
@@ -614,6 +744,71 @@
         width: 40%;
     }
 
+    /* Success Message */
+    .cart-success-message {
+        position: fixed;
+        top: 100px;
+        right: 2rem;
+        background: white;
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        display: none;
+        align-items: center;
+        gap: 1rem;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+    }
+
+    .cart-success-message.show {
+        display: flex;
+    }
+
+    .cart-success-message svg {
+        color: #10b981;
+        flex-shrink: 0;
+    }
+
+    .cart-success-content {
+        flex: 1;
+    }
+
+    .cart-success-content strong {
+        display: block;
+        color: #0a0a0a;
+        margin-bottom: 0.25rem;
+    }
+
+    .cart-success-content p {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .cart-success-close {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        padding: 0.5rem;
+        transition: color 0.3s;
+    }
+
+    .cart-success-close:hover {
+        color: #0a0a0a;
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
     /* Responsive */
     @media (max-width: 1024px) {
         .product-detail {
@@ -646,8 +841,32 @@
         .btn-wishlist {
             width: 100%;
         }
+
+        .cart-success-message {
+            right: 1rem;
+            left: 1rem;
+            top: 90px;
+        }
     }
 </style>
+
+<!-- Success Message Toast -->
+<div class="cart-success-message" id="cartSuccessMessage">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <div class="cart-success-content">
+        <strong>Товар добавлен в корзину!</strong>
+        <p>Перейдите в корзину для оформления заказа</p>
+    </div>
+    <button class="cart-success-close" onclick="closeSuccessMessage()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+</div>
 
 <script>
     // Change main image when thumbnail is clicked
@@ -655,12 +874,10 @@
         const mainImage = document.getElementById('mainImage');
         mainImage.src = imageUrl;
         
-        // Remove active class from all thumbnails
         document.querySelectorAll('.thumbnail').forEach(thumb => {
             thumb.classList.remove('active');
         });
         
-        // Add active class to clicked thumbnail
         thumbnailElement.classList.add('active');
     }
 
@@ -682,21 +899,20 @@
     // Size selection
     document.querySelectorAll('.size-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+            if (!this.disabled) {
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            }
         });
     });
 
-    // Add to cart
-    document.querySelector('.btn-add-to-cart').addEventListener('click', function() {
-        const quantity = document.getElementById('quantity').value;
-        alert(`Добавлено ${quantity} шт. в корзину!`);
-    });
-
-    // Wishlist
-    document.querySelector('.btn-wishlist').addEventListener('click', function() {
-        this.style.color = this.style.color === 'rgb(239, 68, 68)' ? '' : '#ef4444';
-        alert('Добавлено в избранное!');
-    });
+    // Wishlist toggle
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+    }
 </script>
+
 {% endblock %}

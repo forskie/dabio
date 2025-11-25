@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-
+{% load static %}
 {% block title %}
     {% if category %}{{ category.name }} - Dabio{% else %}Каталог - Dabio{% endif %}
 {% endblock %}
@@ -38,14 +38,14 @@
                 <ul class="category-list">
                     <li {% if not category %}class="selected"{% endif %}>
                         <a href="{% url 'main:product_list' %}" class="category-link {% if not category %}active{% endif %}">
-                            <span class="category-icon">📦</span>
+                            <span class="category-icon"></span>
                             <span>Все товары</span>
                         </a>
                     </li>
                     {% for c in categories %}
                         <li {% if category and category.slug == c.slug %}class="selected"{% endif %}>
                             <a href="{{ c.get_absolute_url }}" class="category-link {% if category and category.slug == c.slug %}active{% endif %}">
-                                <span class="category-icon">🏷️</span>
+                                <span class="category-icon"></span>
                                 <span>{{ c.name }}</span>
                             </a>
                         </li>
@@ -54,27 +54,6 @@
             </div>
 
             <!-- Filter Section -->
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">Фильтры</h3>
-                <div class="filter-group">
-                    <h4 class="filter-title">Цена</h4>
-                    <div class="price-inputs">
-                        <input type="number" placeholder="От" class="price-input">
-                        <span>—</span>
-                        <input type="number" placeholder="До" class="price-input">
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <h4 class="filter-title">Сортировка</h4>
-                    <select class="filter-select">
-                        <option>По популярности</option>
-                        <option>По цене: сначала дешевые</option>
-                        <option>По цене: сначала дорогие</option>
-                        <option>Новинки</option>
-                    </select>
-                </div>
-            </div>
         </aside>
 
         <!-- Products Grid -->
@@ -104,8 +83,8 @@
                             {% elif product.image %}
                                 <img src="{{ product.image.url }}" alt="{{ product.name }}">
                             {% else %}
-                                <div class="product-placeholder">
-                                    <span>👕</span>
+                                <div class="showcase-placeholder">
+                                    <img src="{% static 'img/noimage.img' %}" alt="">
                                 </div>
                             {% endif %}
                             {% if product.discount %}
@@ -131,9 +110,6 @@
                                     {% endif %}
                                 </div>
                                 
-                                <button class="btn-add-cart" onclick="addToCart(event, {{ product.id }})">
-                                    🛒
-                                </button>
                             </div>
                         </div>
                     </a>
@@ -142,7 +118,7 @@
             </div>
             {% else %}
             <div class="empty-state">
-                <div class="empty-icon">📦</div>
+                <div class="empty-icon"></div>
                 <h3>Товары не найдены</h3>
                 <p>Попробуйте изменить фильтры или выберите другую категорию</p>
                 <a href="{% url 'main:product_list' %}" class="btn-primary">Показать все товары</a>

@@ -12,7 +12,7 @@
     <div class="profile-grid">
         <!-- User Info Card -->
         <div class="profile-card">
-            <div class="card-icon">👤</div>
+            <div class="card-icon"></div>
             <h3>Личная информация</h3>
             <p class="card-description">Просмотрите и обновите вашу личную информацию</p>
             <div class="user-info">
@@ -34,7 +34,7 @@
 
         <!-- Orders Card -->
         <div class="profile-card">
-            <div class="card-icon">📦</div>
+            <div class="card-icon"></div>
             <h3>Мои заказы</h3>
             <p class="card-description">Отслеживайте свои заказы и историю покупок</p>
             <div class="stat-box">
@@ -46,7 +46,7 @@
 
         <!-- Wishlist Card -->
         <div class="profile-card">
-            <div class="card-icon">❤️</div>
+            <div class="card-icon"></div>
             <h3>Избранное</h3>
             <p class="card-description">Ваши любимые товары в одном месте</p>
             <div class="stat-box">
@@ -58,7 +58,7 @@
 
         <!-- Address Card -->
         <div class="profile-card">
-            <div class="card-icon">📍</div>
+            <div class="card-icon"></div>
             <h3>Адреса доставки</h3>
             <p class="card-description">Управляйте адресами доставки</p>
             {% if user.address %}
@@ -75,31 +75,31 @@
 
         <!-- Settings Card -->
         <div class="profile-card">
-            <div class="card-icon">⚙️</div>
+            <div class="card-icon"></div>
             <h3>Настройки</h3>
             <p class="card-description">Настройте параметры аккаунта</p>
             <div class="settings-links">
                 <a href="{% url 'user:edit_account_details' %}" class="setting-item">
-                    ✏️ Редактировать профиль
+                     Редактировать профиль
                 </a>
                 <a href="#" class="setting-item">
-                    🔒 Изменить пароль
+                     Изменить пароль
                 </a>
                 <a href="{% url 'user:logout' %}" class="setting-item logout">
-                    🚪 Выйти
+                     Выйти
                 </a>
             </div>
         </div>
 
         <!-- Support Card -->
         <div class="profile-card">
-            <div class="card-icon">💬</div>
+            <div class="card-icon"></div>
             <h3>Поддержка</h3>
             <p class="card-description">Нужна помощь? Мы всегда рады помочь</p>
             <div class="support-links">
-                <a href="#" class="support-item">❓ FAQ</a>
-                <a href="#" class="support-item">📧 Связаться с нами</a>
-                <a href="#" class="support-item">📞 Горячая линия</a>
+                <a href="#" class="support-item"> FAQ</a>
+                <a href="#" class="support-item"> Связаться с нами</a>
+                <a href="#" class="support-item"> Горячая линия</a>
             </div>
         </div>
     </div>

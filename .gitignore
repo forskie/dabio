@@ -25,12 +25,10 @@ env/
 db.sqlite3
 media/
 staticfiles/
-static/
 local_settings.py
 
 # Django collectstatic
 /staticfiles/
-/static/
 
 # -------------------------
 # Environment & secrets

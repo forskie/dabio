@@ -46,7 +46,25 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     available = models.BooleanField(default=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
+    discount = models.IntegerField(default=0, verbose_name='Скидка %')
     
+
+    @property
+    def sell_price(self):
+        if self.discount > 0:
+            return self.price - (self.price * self.discount / 100)
+        return self.price
+    
+    @property
+    def discounted_price(self):
+        return self.sell_price
+    
+    @property
+    def savings(self):
+        if self.discount > 0:
+            return self.price - self.sell_price
+        return 0
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
