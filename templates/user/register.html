@@ -1,199 +1,98 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Регистрация - Dabio{% endblock %}
+{% block title %}Регистрация - Aetheria Archives{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-box">
-        <div class="auth-header">
-            <h1>Создать аккаунт</h1>
-            <p>Присоединяйтесь к Dabio и начните делать покупки</p>
+<div class="max-w-md mx-auto mt-16 mb-16 px-4">
+    <div class="luxury-card p-8 sm:p-10 rounded-xl shadow-2xl border border-bronze/20">
+        
+        <div class="text-center mb-8">
+            <h1 class="font-title text-3xl uppercase tracking-widest text-bronze mb-2">Создать аккаунт</h1>
+            <p class="text-gray-400">Присоединяйтесь к Aetheria Archives и начните собирать свою коллекцию</p>
         </div>
 
-        <form method="post" class="auth-form">
+        <form method="post" class="flex flex-col gap-6">
             {% csrf_token %}
             
             {% if form.non_field_errors %}
-                <div class="error-message">
+                <div class="bg-red-900/30 text-red-400 p-3 rounded-lg border border-red-700 text-sm">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
 
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Имя пользователя</label>
-                {{ form.username }}
+            <!-- Username Field -->
+            <div class="flex flex-col gap-2">
+                <label for="{{ form.username.id_for_label }}" class="font-semibold text-gray-300 text-sm">Имя пользователя</label>
+                <input 
+                    type="text" 
+                    name="{{ form.username.html_name }}" 
+                    id="{{ form.username.id_for_label }}" 
+                    value="{{ form.username.value|default:'' }}"
+                    class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                    placeholder="Ваше имя пользователя"
+                    required
+                >
                 {% if form.username.errors %}
-                    <span class="field-error">{{ form.username.errors.0 }}</span>
+                    <span class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</span>
                 {% endif %}
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Email</label>
-                {{ form.email }}
+            <!-- Email Field -->
+            <div class="flex flex-col gap-2">
+                <label for="{{ form.email.id_for_label }}" class="font-semibold text-gray-300 text-sm">Email</label>
+                <input 
+                    type="email" 
+                    name="{{ form.email.html_name }}" 
+                    id="{{ form.email.id_for_label }}" 
+                    value="{{ form.email.value|default:'' }}"
+                    class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                    placeholder="you@example.com"
+                    required
+                >
                 {% if form.email.errors %}
-                    <span class="field-error">{{ form.email.errors.0 }}</span>
+                    <span class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</span>
                 {% endif %}
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.password1.id_for_label }}">Пароль</label>
-                {{ form.password1 }}
+            <!-- Password 1 Field -->
+            <div class="flex flex-col gap-2">
+                <label for="{{ form.password1.id_for_label }}" class="font-semibold text-gray-300 text-sm">Пароль</label>
+                <input 
+                    type="password" 
+                    name="{{ form.password1.html_name }}" 
+                    id="{{ form.password1.id_for_label }}" 
+                    class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                    placeholder="Введите пароль"
+                    required
+                >
+                <small class="text-gray-500 text-xs mt-1">Минимум 8 символов</small>
                 {% if form.password1.errors %}
-                    <span class="field-error">{{ form.password1.errors.0 }}</span>
+                    <span class="text-red-500 text-xs mt-1">{{ form.password1.errors.0 }}</span>
                 {% endif %}
-                <small class="form-help">Минимум 8 символов</small>
             </div>
 
-            <div class="form-group">
-                <label for="{{ form.password2.id_for_label }}">Подтвердите пароль</label>
-                {{ form.password2 }}
+            <!-- Password 2 Field -->
+            <div class="flex flex-col gap-2">
+                <label for="{{ form.password2.id_for_label }}" class="font-semibold text-gray-300 text-sm">Подтвердите пароль</label>
+                <input 
+                    type="password" 
+                    name="{{ form.password2.html_name }}" 
+                    id="{{ form.password2.id_for_label }}" 
+                    class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                    placeholder="Повторите пароль"
+                    required
+                >
                 {% if form.password2.errors %}
-                    <span class="field-error">{{ form.password2.errors.0 }}</span>
+                    <span class="text-red-500 text-xs mt-1">{{ form.password2.errors.0 }}</span>
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn-primary">Зарегистрироваться</button>
+            <button type="submit" class="luxury-btn w-full p-3 mt-4 text-lg">Зарегистрироваться</button>
         </form>
 
-        <div class="auth-footer">
-            <p>Уже есть аккаунт? <a href="{% url 'user:login' %}">Войти</a></p>
+        <div class="text-center mt-8 pt-6 border-t border-gray-800 text-gray-400">
+            <p>Уже есть аккаунт? <a href="{% url 'user:login' %}" class="text-bronze hover:text-white font-semibold transition duration-200">Войти</a></p>
         </div>
     </div>
 </div>
-
-<style>
-    .auth-container {
-        max-width: 480px;
-        margin: 3rem auto;
-        padding: 0 1rem;
-    }
-
-    .auth-box {
-        background: white;
-        border-radius: 16px;
-        padding: 3rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .auth-header {
-        text-align: center;
-        margin-bottom: 2.5rem;
-    }
-
-    .auth-header h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0a0a0a;
-        margin-bottom: 0.5rem;
-    }
-
-    .auth-header p {
-        color: #666;
-        font-size: 0.95rem;
-    }
-
-    .auth-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .form-group label {
-        font-weight: 600;
-        color: #1a1a1a;
-        font-size: 0.9rem;
-    }
-
-    .form-input,
-    .form-textarea {
-        width: 100%;
-        padding: 0.875rem 1rem;
-        border: 2px solid #e5e5e5;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s;
-        font-family: inherit;
-    }
-
-    .form-input:focus,
-    .form-textarea:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-
-    .form-help {
-        color: #666;
-        font-size: 0.85rem;
-        margin-top: -0.25rem;
-    }
-
-    .field-error {
-        color: #ef4444;
-        font-size: 0.85rem;
-        margin-top: -0.25rem;
-    }
-
-    .error-message {
-        background: #fee2e2;
-        color: #991b1b;
-        padding: 1rem;
-        border-radius: 8px;
-        border-left: 4px solid #ef4444;
-        margin-bottom: 1rem;
-    }
-
-    .btn-primary {
-        background: #6366f1;
-        color: white;
-        padding: 1rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin-top: 0.5rem;
-    }
-
-    .btn-primary:hover {
-        background: #4f46e5;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-    }
-
-    .auth-footer {
-        text-align: center;
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 1px solid #e5e5e5;
-    }
-
-    .auth-footer a {
-        color: #6366f1;
-        text-decoration: none;
-        font-weight: 600;
-        transition: color 0.3s;
-    }
-
-    .auth-footer a:hover {
-        color: #4f46e5;
-    }
-
-    @media (max-width: 640px) {
-        .auth-box {
-            padding: 2rem 1.5rem;
-        }
-
-        .auth-header h1 {
-            font-size: 1.5rem;
-        }
-    }
-</style>
 {% endblock %}

@@ -1,918 +1,259 @@
-{% extends 'main/base.html' %}
+{% extends "main/base.html" %}
 
-{% block title %}{{ product.name }} - Dabio{% endblock %}
+{% block title %}{{ product.name }} | Detail{% endblock %}
 
 {% block content %}
-<div class="product-detail-container">
-    <!-- Breadcrumbs -->
-    <div class="breadcrumbs">
-        <a href="/">Главная</a>
-        <span>→</span>
-        <a href="{% url 'main:product_list' %}">Каталог</a>
-        <span>→</span>
-        <a href="{% url 'main:product_list' product.category.slug %}">{{ product.category.name }}</a>
-        <span>→</span>
-        <span class="current">{{ product.name }}</span>
-    </div>
-
-    <!-- Product Detail -->
-    <div class="product-detail">
-        <!-- Product Images -->
-        <div class="product-gallery">
-            <div class="main-image">
-                {% if product.main_image %}
-                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" id="mainImage">
-                {% elif product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" id="mainImage">
-                {% else %}
-                    <div class="image-placeholder">
-                        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
-                        </svg>
-                    </div>
-                {% endif %}
-                {% if product.discount %}
-                    <span class="detail-badge discount">-{{ product.discount }}%</span>
-                {% endif %}
-                {% if product.is_new %}
-                    <span class="detail-badge new">NEW</span>
-                {% endif %}
+<section class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-16">
+        
+        <!-- Product Image Section & Slider -->
+        <div class="space-y-4">
+            <!-- Main Display Image (Placeholder for now) -->
+            <div id="main-image-container" class="overflow-hidden rounded-xl shadow-3xl aspect-square bg-[#2A2A2A]">
+                <!-- Initial image load, will be replaced by JS -->
+                <img id="main-product-image" 
+                     src="{% if product.main_image %}{{ product.main_image.url }}{% else %}https://placehold.co/800x800/2A2A2A/B8860B?text={{ product.name }}{% endif %}" 
+                     alt="{{ product.name }}" 
+                     class="w-full h-full object-cover transform transition duration-700"
+                     onerror="this.onerror=null; this.src='https://placehold.co/800x800/2A2A2A/B8860B?text=Load+Failed';">
             </div>
-            
-            <!-- Thumbnail Gallery -->
-            {% if product.images.all %}
-            <div class="thumbnail-gallery">
-                {% if product.main_image %}
-                    <div class="thumbnail active" onclick="changeMainImage('{{ product.main_image.url }}', this)">
-                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
-                    </div>
+
+            <!-- Thumbnail Slider -->
+            <div class="flex space-x-3 overflow-x-auto p-2 scrollbar-hide">
+                <!-- Fallback to main image if no extra images -->
+                {% if not product.images.all %}
+                <img src="{% if product.main_image %}{{ product.main_image.url }}{% else %}https://placehold.co/100x100/2A2A2A/B8860B?text={{ product.name }}{% endif %}"
+                     class="w-20 h-20 object-cover rounded-md cursor-pointer border-2 border-bronze opacity-80"
+                     data-full-src="{% if product.main_image %}{{ product.main_image.url }}{% else %}https://placehold.co/800x800/2A2A2A/B8860B?text={{ product.name }}{% endif %}"
+                     onclick="updateMainImage(this)">
                 {% endif %}
+
+                <!-- Iterate over additional product images -->
                 {% for image in product.images.all %}
-                    <div class="thumbnail" onclick="changeMainImage('{{ image.image.url }}', this)">
-                        <img src="{{ image.image.url }}" alt="Additional image for {{ product.name }}">
-                    </div>
+                <img src="{{ image.image.url }}" 
+                     alt="{{ product.name }} thumbnail {{ forloop.counter }}" 
+                     class="w-20 h-20 object-cover rounded-md cursor-pointer border-2 border-transparent hover:border-bronze transition duration-300 {% if forloop.first %}active-thumb border-bronze{% endif %}"
+                     data-full-src="{{ image.image.url }}"
+                     onclick="updateMainImage(this)">
                 {% endfor %}
             </div>
-            {% endif %}
         </div>
-
-        <!-- Product Info -->
-        <div class="product-details">
-            <div class="product-header">
-                <span class="product-category-badge">{{ product.category.name }}</span>
-                <h1 class="product-title">{{ product.name }}</h1>
-                
-                <div class="product-rating">
-                    <div class="stars">
-                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                        <svg class="star-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                        <svg class="star-icon half" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    </div>
-                    <span class="rating-text">(4.5)</span>
+        
+        <!-- Product Info Section -->
+        <div class="lg:sticky lg:top-24 h-fit space-y-8">
+            <header class="border-b border-gray-800 pb-6">
+                <p class="text-sm font-title uppercase tracking-widest text-bronze mb-2">{{ product.category.name }}</p>
+                <h1 class="font-title text-4xl md:text-5xl uppercase tracking-tight text-white">{{ product.name }}</h1>
+                <!-- Displaying Discounted Price if applicable -->
+                {% if product.discount %}
+                <div class="flex items-center gap-3 mt-4">
+                    <!-- Используем product.price для зачеркнутой цены -->
+                    <p class="text-xl font-light text-gray-500 line-through">${{ product.price|floatformat:2 }}</p>
+                    <!-- Используем discounted_price для продажи -->
+                    <p class="text-3xl font-semibold text-red-500">${{ product.discounted_price|floatformat:2 }}</p>
                 </div>
+                {% else %}
+                <p class="text-3xl font-semibold text-bronze mt-4">${{ product.price|floatformat:2 }}</p>
+                {% endif %}
+            </header>
 
-                <div class="product-price-block">
-                    {% if product.discount %}
-                        <div class="price-row">
-                            <span class="price-old">{{ product.price }} TJS</span>
-                            <span class="discount-badge">-{{ product.discount }}%</span>
-                        </div>
-                        <div class="price-current">{{ product.discounted_price }} TJS</div>
-                        <p class="savings">Вы экономите {{ product.savings }} TJS</p>
-                    {% else %}
-                        <div class="price-current">{{ product.price }} TJS</div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="product-description">
-                <h3>Описание</h3>
-                <p>{{ product.description|linebreaks }}</p>
-            </div>
-
-            <!-- Add to Cart Form -->
-            <form action="{% url 'cart:cart_add' product.id %}" method="post" id="addToCartForm">
-                {% csrf_token %}
+            <div class="space-y-6">
+                <!-- Full Description Added Here (using product.descriptions from model) -->
+                <h2 class="font-title text-2xl uppercase tracking-wider text-white border-b border-gray-800 pb-2">Описание</h2>
+                <p class="text-gray-300 leading-relaxed whitespace-pre-line">{{ product.descriptions }}</p>
                 
-                <!-- Options -->
-                <div class="product-options">
-                    {% if product.product_sizes.all %}
-                    <div class="option-group">
-                        <label>Размер</label>
-                        <div class="size-options">
-                            {% for product_size in product.product_sizes.all %}
-                                <button type="button" class="size-btn" data-stock="{{ product_size.stock }}" {% if product_size.stock == 0 %}disabled{% endif %}>
-                                    {{ product_size.size.name }}
-                                    {% if product_size.stock == 0 %}
-                                        <span class="out-of-stock-label">Нет в наличии</span>
-                                    {% endif %}
+                <!-- Cart Add Form -->
+                <form id="add-to-cart-form" action="{% url 'cart:cart_add' product.id %}" method="post">
+                    {% csrf_token %}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-b border-gray-800 py-6">
+                         <!-- Color Selection (Based on single Product.color field) -->
+                         <div id="color-selection-container">
+                            <label class="block text-sm font-title uppercase tracking-widest mb-2 text-white">Color</label>
+                            <div id="color-options" class="flex flex-wrap gap-2 items-center h-8">
+                                <!-- Show the product's main color as the only option -->
+                                {% if product.color %}
+                                <button type="button" 
+                                        data-color="{{ product.color }}"
+                                        class="color-option w-8 h-8 rounded-full border-2 border-bronze ring-2 ring-offset-2 ring-[#111111] transition duration-300 focus:outline-none"
+                                        style="background-color: {{ product.hex_code|default:'transparent' }}; border-color: {{ product.hex_code|default:'#B8860B' }}"
+                                        title="{{ product.color }}"
+                                        id="default_color_button">
                                 </button>
-                            {% endfor %}
+                                <span class="text-sm text-gray-400">{{ product.color }}</span>
+                                {% else %}
+                                <span class="text-sm text-gray-500">Color information missing.</span>
+                                {% endif %}
+                            </div>
+                            <!-- Hidden input auto-filled by JS on load -->
+                            <input type="hidden" name="color" id="selected_color" value="{{ product.color|default:'' }}" required>
                         </div>
-                        <a href="#" class="size-guide-link">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                            </svg>
-                            Таблица размеров
-                        </a>
-                    </div>
-                    {% endif %}
-
-                    {% if product.color %}
-                    <div class="option-group">
-                        <label>Цвет</label>
-                        <div class="color-info">
-                            <span class="color-display">{{ product.color }}</span>
+                        
+                        <!-- Size Selection (Iterating over ProductSize instances) -->
+                        <div id="size-selection-container">
+                            <label for="id_size" class="block text-sm font-title uppercase tracking-widest mb-2 text-white">Size</label>
+                            <select name="size" id="id_size"
+                                    class="w-full p-3 bg-[#333333] border border-gray-600 text-white rounded-md focus:ring-bronze focus:border-bronze transition duration-300" required>
+                                <option value="" data-stock="0" disabled selected>Select Size</option>
+                                <!-- FIXED: Iterating over ProductSize (related_name='product_size') -->
+                                {% for product_size in product.product_size.all %}
+                                <option value="{{ product_size.size.name }}" data-stock="{{ product_size.stock }}">{{ product_size.size.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                    </div>
-                    {% endif %}
 
-                    <div class="option-group">
-                        <label>Количество</label>
-                        <div class="quantity-selector">
-                            <button type="button" class="qty-btn" onclick="decrementQty()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                            </button>
-                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10" readonly>
-                            <input type="hidden" name="override" value="False">
-                            <button type="button" class="qty-btn" onclick="incrementQty()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                            </button>
+                        <!-- Quantity Input -->
+                        <div id="quantity-selection-container">
+                            <label for="id_quantity" class="block text-sm font-title uppercase tracking-widest mb-2 text-white">Quantity</label>
+                            <input type="number" name="quantity" id="id_quantity" value="1" min="1" max="1"
+                                class="w-full p-3 bg-[#333333] border border-gray-600 text-white rounded-md focus:ring-bronze focus:border-bronze transition duration-300" disabled>
                         </div>
                     </div>
-                </div>
+                    
+                    <!-- Stock Information -->
+                    <p id="stock-info" class="text-sm mt-3 font-semibold text-yellow-500">Please select a size to check availability.</p>
+                    
+                    <!-- Hidden field for size ID (critical for cart logic, can be size name/ID) -->
+                    <!-- We use size name here, as the cart view typically resolves the variation using product ID + attributes -->
+                    <input type="hidden" name="variation_id" id="variation_id">
 
-                <!-- Actions -->
-                <div class="product-actions">
-                    <button type="submit" class="btn-add-to-cart">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                        <span class="btn-text">Добавить в корзину</span>
+                    <!-- CRITICAL FIX: Include the 'override' field, required by the cart_add view -->
+                    <input type="hidden" name="override" value="False">
+
+                    <!-- Action Button -->
+                    <button class="luxury-btn w-full p-4 text-lg mt-8" type="submit" id="add-to-cart-btn" disabled>
+                        Add to Cart
                     </button>
-                    <button type="button" class="btn-wishlist" id="wishlistBtn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </form>
-
-            <!-- Additional Info -->
-            <div class="product-info-blocks">
-                <div class="info-block">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="1" y="3" width="15" height="13"></rect>
-                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                        </svg>
-                    </div>
-                    <div class="info-content">
-                        <strong>Бесплатная доставка</strong>
-                        <p>При заказе от 500 TJS</p>
-                    </div>
-                </div>
-                <div class="info-block">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 11 12 14 22 4"></polyline>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                        </svg>
-                    </div>
-                    <div class="info-content">
-                        <strong>Легкий возврат</strong>
-                        <p>30 дней на возврат</p>
-                    </div>
-                </div>
-                <div class="info-block">
-                    <div class="info-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                    </div>
-                    <div class="info-content">
-                        <strong>Гарантия качества</strong>
-                        <p>Только оригинальные товары</p>
-                    </div>
-                </div>
+                </form>
             </div>
 
-            <!-- Specifications -->
-            <div class="specifications">
-                <h3>Характеристики</h3>
-                <table class="specs-table">
-                    <tr>
-                        <td>Артикул</td>
-                        <td><strong>{{ product.id }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Категория</td>
-                        <td><strong>{{ product.category.name }}</strong></td>
-                    </tr>
-                    {% if product.color %}
-                    <tr>
-                        <td>Цвет</td>
-                        <td><strong>{{ product.color }}</strong></td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td>Материал</td>
-                        <td><strong>Хлопок 100%</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Страна</td>
-                        <td><strong>Таджикистан</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Наличие</td>
-                        <td>
-                            {% if product.available %}
-                                <strong style="color: #10b981;">В наличии</strong>
-                            {% else %}
-                                <strong style="color: #ef4444;">Нет в наличии</strong>
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
+            <!-- Additional Details/Accordion (Updated color) -->
+            <div class="border-t border-gray-800 pt-8 space-y-4">
+                <details class="group">
+                    <summary class="flex justify-between items-center cursor-pointer text-white text-lg font-medium hover:text-bronze transition duration-300">
+                        Material & Care
+                        <span class="transform group-open:rotate-180 transition-transform text-bronze">+</span>
+                    </summary>
+                    <p class="mt-2 text-gray-400 pl-4 text-sm">Composition: 100% Organic Nano-Fiber. Dry Clean Only. Avoid direct solar exposure for prolonged periods.</p>
+                </details>
+                <details class="group">
+                    <summary class="flex justify-between items-center cursor-pointer text-white text-lg font-medium hover:text-bronze transition duration-300">
+                        Shipping & Returns
+                        <span class="transform group-open:rotate-180 transition-transform text-bronze">+</span>
+                    </summary>
+                    <p class="mt-2 text-gray-400 pl-4 text-sm">Global priority shipping within 72 hours. Returns accepted within 30 days, conditioned on original packaging integrity.</p>
+                </details>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<style>
-    .product-detail-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-    }
-
-    .breadcrumbs {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        font-size: 0.9rem;
-        color: #666;
-        flex-wrap: wrap;
-    }
-
-    .breadcrumbs a {
-        color: #666;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-    .breadcrumbs a:hover {
-        color: #6366f1;
-    }
-
-    .breadcrumbs .current {
-        color: #0a0a0a;
-        font-weight: 600;
-    }
-
-    /* Product Detail Layout */
-    .product-detail {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        margin-bottom: 4rem;
-    }
-
-    /* Gallery */
-    .product-gallery {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .main-image {
-        position: relative;
-        width: 100%;
-        height: 600px;
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-
-    .main-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .image-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
-        color: #999;
-    }
-
-    .detail-badge {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        padding: 0.75rem 1.5rem;
-        border-radius: 25px;
-        font-size: 0.9rem;
-        font-weight: 700;
-        z-index: 10;
-        letter-spacing: 0.5px;
-    }
-
-    .detail-badge.discount {
-        background: #ef4444;
-        color: white;
-    }
-
-    .detail-badge.new {
-        background: #10b981;
-        color: white;
-        top: 4.5rem;
-    }
-
-    .thumbnail-gallery {
-        display: flex;
-        gap: 1rem;
-        overflow-x: auto;
-    }
-
-    .thumbnail {
-        width: 100px;
-        height: 100px;
-        border-radius: 12px;
-        overflow: hidden;
-        cursor: pointer;
-        border: 3px solid transparent;
-        transition: all 0.3s;
-        flex-shrink: 0;
-    }
-
-    .thumbnail.active {
-        border-color: #6366f1;
-    }
-
-    .thumbnail:hover {
-        border-color: #6366f1;
-        opacity: 0.8;
-    }
-
-    .thumbnail img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    /* Product Details */
-    .product-details {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .product-category-badge {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background: #f5f5ff;
-        color: #6366f1;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .product-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #0a0a0a;
-        line-height: 1.2;
-        margin-bottom: 1rem;
-    }
-
-    .product-rating {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .stars {
-        display: flex;
-        gap: 0.25rem;
-        color: #fbbf24;
-    }
-
-    .star-icon {
-        width: 20px;
-        height: 20px;
-    }
-
-    .star-icon.half {
-        opacity: 0.5;
-    }
-
-    .rating-text {
-        color: #666;
-        font-size: 0.9rem;
-        margin-left: 0.5rem;
-    }
-
-    .product-price-block {
-        padding: 1.5rem;
-        background: #f5f5ff;
-        border-radius: 16px;
-        margin-bottom: 1rem;
-    }
-
-    .price-row {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .price-old {
-        font-size: 1.2rem;
-        color: #999;
-        text-decoration: line-through;
-    }
-
-    .discount-badge {
-        padding: 0.25rem 0.75rem;
-        background: #ef4444;
-        color: white;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 700;
-    }
-
-    .price-current {
-        font-size: 3rem;
-        font-weight: 800;
-        color: #6366f1;
-        line-height: 1;
-    }
-
-    .savings {
-        color: #10b981;
-        font-weight: 600;
-        margin-top: 0.5rem;
-    }
-
-    .product-description h3 {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
-        color: #0a0a0a;
-    }
-
-    .product-description p {
-        color: #666;
-        line-height: 1.8;
-    }
-
-    /* Options */
-    .product-options {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        padding: 2rem 0;
-        border-top: 2px solid #e5e5e5;
-        border-bottom: 2px solid #e5e5e5;
-    }
-
-    .option-group label {
-        display: block;
-        font-weight: 700;
-        color: #0a0a0a;
-        margin-bottom: 0.75rem;
-        font-size: 1.1rem;
-    }
-
-    .size-options {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-    }
-
-    .size-btn {
-        position: relative;
-        min-width: 60px;
-        padding: 0.75rem 1.25rem;
-        border: 2px solid #e5e5e5;
-        background: white;
-        border-radius: 10px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .size-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background: #f5f5f5;
-    }
-
-    .size-btn:not(:disabled):hover,
-    .size-btn.active {
-        border-color: #6366f1;
-        color: #6366f1;
-        background: #f5f5ff;
-    }
-
-    .out-of-stock-label {
-        display: block;
-        font-size: 0.7rem;
-        color: #ef4444;
-        margin-top: 0.25rem;
-    }
-
-    .size-guide-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 0.75rem;
-        color: #6366f1;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: color 0.3s;
-    }
-
-    .size-guide-link:hover {
-        color: #4f46e5;
-    }
-
-    .color-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .color-display {
-        padding: 0.75rem 1.5rem;
-        background: #f5f5f5;
-        border-radius: 10px;
-        font-weight: 600;
-        color: #0a0a0a;
-    }
-
-    .quantity-selector {
-        display: inline-flex;
-        border: 2px solid #e5e5e5;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .qty-btn {
-        width: 50px;
-        height: 50px;
-        border: none;
-        background: white;
-        font-size: 1.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .qty-btn:hover {
-        background: #f5f5f5;
-    }
-
-    #quantity {
-        width: 80px;
-        height: 50px;
-        border: none;
-        text-align: center;
-        font-size: 1.2rem;
-        font-weight: 700;
-    }
-
-    /* Actions */
-    .product-actions {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .btn-add-to-cart {
-        flex: 1;
-        padding: 1.25rem 2rem;
-        background: #6366f1;
-        color: white;
-        border: none;
-        border-radius: 12px;
-        font-size: 1.1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-    }
-
-    .btn-add-to-cart:hover {
-        background: #4f46e5;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn-add-to-cart svg {
-        flex-shrink: 0;
-    }
-
-    .btn-wishlist {
-        width: 60px;
-        height: 60px;
-        border: 2px solid #e5e5e5;
-        background: white;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #666;
-    }
-
-    .btn-wishlist:hover {
-        border-color: #ef4444;
-        color: #ef4444;
-        background: #fff5f5;
-    }
-
-    .btn-wishlist.active {
-        border-color: #ef4444;
-        background: #ef4444;
-        color: white;
-    }
-
-    .btn-wishlist svg {
-        transition: all 0.3s;
-    }
-
-    .btn-wishlist.active svg {
-        fill: white;
-    }
-
-    /* Info Blocks */
-    .product-info-blocks {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .info-block {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem;
-        background: #f5f5f5;
-        border-radius: 12px;
-    }
-
-    .info-icon {
-        color: #6366f1;
-        flex-shrink: 0;
-    }
-
-    .info-content strong {
-        display: block;
-        color: #0a0a0a;
-        margin-bottom: 0.25rem;
-    }
-
-    .info-content p {
-        font-size: 0.9rem;
-        color: #666;
-        margin: 0;
-    }
-
-    /* Specifications */
-    .specifications h3 {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
-        color: #0a0a0a;
-    }
-
-    .specs-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .specs-table tr {
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .specs-table td {
-        padding: 1rem 0;
-    }
-
-    .specs-table td:first-child {
-        color: #666;
-        width: 40%;
-    }
-
-    /* Success Message */
-    .cart-success-message {
-        position: fixed;
-        top: 100px;
-        right: 2rem;
-        background: white;
-        padding: 1.5rem 2rem;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        display: none;
-        align-items: center;
-        gap: 1rem;
-        z-index: 1000;
-        animation: slideInRight 0.3s ease;
-    }
-
-    .cart-success-message.show {
-        display: flex;
-    }
-
-    .cart-success-message svg {
-        color: #10b981;
-        flex-shrink: 0;
-    }
-
-    .cart-success-content {
-        flex: 1;
-    }
-
-    .cart-success-content strong {
-        display: block;
-        color: #0a0a0a;
-        margin-bottom: 0.25rem;
-    }
-
-    .cart-success-content p {
-        color: #666;
-        font-size: 0.9rem;
-        margin: 0;
-    }
-
-    .cart-success-close {
-        background: none;
-        border: none;
-        color: #999;
-        cursor: pointer;
-        padding: 0.5rem;
-        transition: color 0.3s;
-    }
-
-    .cart-success-close:hover {
-        color: #0a0a0a;
-    }
-
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(100px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .product-detail {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        .main-image {
-            height: 500px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .product-title {
-            font-size: 2rem;
-        }
-
-        .price-current {
-            font-size: 2.5rem;
-        }
-
-        .main-image {
-            height: 400px;
-        }
-
-        .product-actions {
-            flex-direction: column;
-        }
-
-        .btn-wishlist {
-            width: 100%;
-        }
-
-        .cart-success-message {
-            right: 1rem;
-            left: 1rem;
-            top: 90px;
-        }
-    }
-</style>
-
-<!-- Success Message Toast -->
-<div class="cart-success-message" id="cartSuccessMessage">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
-    <div class="cart-success-content">
-        <strong>Товар добавлен в корзину!</strong>
-        <p>Перейдите в корзину для оформления заказа</p>
-    </div>
-    <button class="cart-success-close" onclick="closeSuccessMessage()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-    </button>
-</div>
-
+<!-- JavaScript for Image Slider and Variation Logic -->
 <script>
-    // Change main image when thumbnail is clicked
-    function changeMainImage(imageUrl, thumbnailElement) {
-        const mainImage = document.getElementById('mainImage');
-        mainImage.src = imageUrl;
+    // Since we fixed the template logic to use ORM relationships directly, 
+    // we no longer rely on 'product.variations_json', but we keep the structure 
+    // for future complex variation handling.
+    // For now, we rely on data-stock attributes on the size options.
+    
+    // --- Image Slider Logic ---
+    function updateMainImage(thumbnail) {
+        const mainImage = document.getElementById('main-product-image');
+        const activeThumb = document.querySelector('.active-thumb');
         
-        document.querySelectorAll('.thumbnail').forEach(thumb => {
-            thumb.classList.remove('active');
-        });
+        // Remove active state from current thumbnail
+        if (activeThumb) {
+            activeThumb.classList.remove('active-thumb', 'border-bronze');
+            activeThumb.classList.add('border-transparent');
+        }
+
+        // Set new main image source
+        mainImage.src = thumbnail.dataset.fullSrc;
         
-        thumbnailElement.classList.add('active');
+        // Set active state on clicked thumbnail
+        thumbnail.classList.add('active-thumb', 'border-bronze');
+        thumbnail.classList.remove('border-transparent');
     }
-
-    // Quantity controls
-    function incrementQty() {
-        const input = document.getElementById('quantity');
-        if (parseInt(input.value) < parseInt(input.max)) {
-            input.value = parseInt(input.value) + 1;
+    
+    // Set first image as active on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const firstThumb = document.querySelector('.w-20.h-20.object-cover');
+        if (firstThumb) {
+            updateMainImage(firstThumb);
         }
-    }
-
-    function decrementQty() {
-        const input = document.getElementById('quantity');
-        if (parseInt(input.value) > parseInt(input.min)) {
-            input.value = parseInt(input.value) - 1;
-        }
-    }
-
-    // Size selection
-    document.querySelectorAll('.size-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (!this.disabled) {
-                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            }
-        });
     });
 
-    // Wishlist toggle
-    const wishlistBtn = document.getElementById('wishlistBtn');
-    if (wishlistBtn) {
-        wishlistBtn.addEventListener('click', function() {
-            this.classList.toggle('active');
-        });
+
+    // --- Variation Selection Logic ---
+
+    // State to hold selected options (Simplified for single-color product)
+    let selectedOptions = {
+        color: document.getElementById('selected_color').value, // Auto-selects product's single color
+        size: null
+    };
+
+    const sizeSelect = document.getElementById('id_size');
+    const stockInfo = document.getElementById('stock-info');
+    const quantityInput = document.getElementById('id_quantity');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const variationIdInput = document.getElementById('variation_id'); // We'll store the selected size name here
+
+    // Function to check stock based on size selection (Color is now fixed/auto-selected)
+    function checkSelectionAndStock() {
+        const selectedSize = sizeSelect.value;
+        
+        // Reset inputs and buttons
+        stockInfo.textContent = '';
+        quantityInput.value = 1;
+        quantityInput.max = 1;
+        quantityInput.disabled = true;
+        addToCartBtn.disabled = true;
+        
+        // Update size state
+        selectedOptions.size = selectedSize;
+
+        if (!selectedSize) {
+            stockInfo.textContent = 'Please select a size to check availability.';
+            stockInfo.classList.remove('text-green-500', 'text-red-500');
+            stockInfo.classList.add('text-yellow-500');
+            return;
+        }
+        
+        // Get stock from the selected option's data attribute
+        const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+        const stock = parseInt(selectedOption.dataset.stock) || 0;
+        
+        // Since we are only tracking size/stock through ProductSize, the size name acts as the 'variation identifier' for the cart
+        variationIdInput.value = selectedSize; 
+
+        if (stock > 0) {
+            stockInfo.textContent = `In Stock: ${stock} left.`;
+            stockInfo.classList.remove('text-yellow-500', 'text-red-500');
+            stockInfo.classList.add('text-green-500');
+            
+            quantityInput.max = stock;
+            quantityInput.disabled = false;
+            addToCartBtn.disabled = false;
+
+        } else {
+            stockInfo.textContent = 'Sold Out in this size.';
+            stockInfo.classList.remove('text-yellow-500', 'text-green-500');
+            stockInfo.classList.add('text-red-500');
+        }
     }
+    
+    // Event listener for size dropdown change
+    sizeSelect.addEventListener('change', checkSelectionAndStock);
+    
 </script>
 
+<style>
+/* Utility class to hide scrollbar while allowing scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+</style>
 {% endblock %}

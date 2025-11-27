@@ -1,326 +1,192 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Редактировать профиль - Dabio{% endblock %}
+{% block title %}Редактировать профиль - Aetheria Archives{% endblock %}
 
 {% block content %}
-<div class="edit-container">
-    <div class="edit-header">
+<div class="max-w-4xl mx-auto mt-12 mb-16 px-4">
+    
+    <!-- Edit Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-gray-800">
         <div>
-            <h1>Редактировать профиль</h1>
-            <p>Обновите информацию вашего аккаунта</p>
+            <h1 class="font-title text-4xl uppercase tracking-widest text-white mb-1">Редактировать профиль</h1>
+            <p class="text-lg text-gray-400">Обновите информацию вашего аккаунта</p>
         </div>
-        <a href="{% url 'user:account_details' %}" class="btn-cancel">✕ Отмена</a>
+        <a href="{% url 'user:account_details' %}" class="luxury-btn-outline mt-4 sm:mt-0 px-6 py-2 text-sm text-red-400 border-red-800 hover:bg-red-900/30 transition duration-300">
+            ✕ Отмена
+        </a>
     </div>
 
-    <form method="post" action="{% url 'user:update_account_details' %}" class="edit-form">
+    <form method="post" action="{% url 'user:update_account_details' %}" class="flex flex-col gap-8">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-            <div class="error-message">
+            <div class="bg-red-900/30 text-red-400 p-3 rounded-lg border border-red-700 text-sm">
                 {{ form.non_field_errors }}
             </div>
         {% endif %}
 
         <!-- Personal Information Section -->
-        <div class="form-section">
-            <div class="section-header">
-                <div class="section-icon"></div>
-                <h2>Личная информация</h2>
+        <div class="luxury-card p-6 sm:p-8 rounded-xl shadow-xl border border-bronze/20">
+            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-bronze">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+                <h2 class="font-title text-xl uppercase tracking-wider text-white">Личная информация</h2>
             </div>
 
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="{{ form.first_name.id_for_label }}">Имя</label>
-                    {{ form.first_name }}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- First Name Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.first_name.id_for_label }}" class="font-semibold text-gray-300 text-sm">Имя</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.first_name.html_name }}" 
+                        id="{{ form.first_name.id_for_label }}" 
+                        value="{{ form.first_name.value|default:'' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                        placeholder="Ваше имя"
+                    >
                     {% if form.first_name.errors %}
-                        <span class="field-error">{{ form.first_name.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.first_name.errors.0 }}</span>
                     {% endif %}
                 </div>
 
-                <div class="form-group">
-                    <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
-                    {{ form.last_name }}
+                <!-- Last Name Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.last_name.id_for_label }}" class="font-semibold text-gray-300 text-sm">Фамилия</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.last_name.html_name }}" 
+                        id="{{ form.last_name.id_for_label }}" 
+                        value="{{ form.last_name.value|default:'' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                        placeholder="Ваша фамилия"
+                    >
                     {% if form.last_name.errors %}
-                        <span class="field-error">{{ form.last_name.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</span>
                     {% endif %}
                 </div>
 
-                <div class="form-group">
-                    <label for="{{ form.email.id_for_label }}">Email *</label>
-                    {{ form.email }}
+                <!-- Email Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.email.id_for_label }}" class="font-semibold text-gray-300 text-sm">Email *</label>
+                    <input 
+                        type="email" 
+                        name="{{ form.email.html_name }}" 
+                        id="{{ form.email.id_for_label }}" 
+                        value="{{ form.email.value|default:'' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                        placeholder="you@example.com"
+                        required
+                    >
                     {% if form.email.errors %}
-                        <span class="field-error">{{ form.email.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</span>
                     {% endif %}
                 </div>
 
-                <div class="form-group">
-                    <label for="{{ form.phone.id_for_label }}">Телефон</label>
-                    {{ form.phone }}
+                <!-- Phone Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.phone.id_for_label }}" class="font-semibold text-gray-300 text-sm">Телефон</label>
+                    <input 
+                        type="tel" 
+                        name="{{ form.phone.html_name }}" 
+                        id="{{ form.phone.id_for_label }}" 
+                        value="{{ form.phone.value|default:'' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                        placeholder="+992 XXX XXX XXX"
+                    >
+                    <small class="text-gray-500 text-xs mt-1">Формат: +992 XXX XXX XXX</small>
                     {% if form.phone.errors %}
-                        <span class="field-error">{{ form.phone.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.phone.errors.0 }}</span>
                     {% endif %}
-                    <small class="form-help">Формат: +992 XXX XXX XXX</small>
                 </div>
 
-                <div class="form-group">
-                    <label for="{{ form.date_of_birth.id_for_label }}">Дата рождения</label>
-                    {{ form.date_of_birth }}
+                <!-- Date of Birth Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.date_of_birth.id_for_label }}" class="font-semibold text-gray-300 text-sm">Дата рождения</label>
+                    <input 
+                        type="date" 
+                        name="{{ form.date_of_birth.html_name }}" 
+                        id="{{ form.date_of_birth.id_for_label }}" 
+                        value="{{ form.date_of_birth.value|default:''|date:'Y-m-d' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                    >
                     {% if form.date_of_birth.errors %}
-                        <span class="field-error">{{ form.date_of_birth.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.date_of_birth.errors.0 }}</span>
                     {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Address Section -->
-        <div class="form-section">
-            <div class="section-header">
-                <div class="section-icon"></div>
-                <h2>Адрес доставки</h2>
+        <div class="luxury-card p-6 sm:p-8 rounded-xl shadow-xl border border-bronze/20">
+            <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-bronze">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+                <h2 class="font-title text-xl uppercase tracking-wider text-white">Адрес доставки</h2>
             </div>
 
-            <div class="form-grid">
-                <div class="form-group full-width">
-                    <label for="{{ form.address.id_for_label }}">Адрес</label>
-                    {{ form.address }}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Address Field -->
+                <div class="flex flex-col gap-2 md:col-span-2">
+                    <label for="{{ form.address.id_for_label }}" class="font-semibold text-gray-300 text-sm">Адрес</label>
+                    <textarea
+                        name="{{ form.address.html_name }}" 
+                        id="{{ form.address.id_for_label }}" 
+                        rows="3"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200 resize-y"
+                        placeholder="Улица, дом, квартира"
+                    >{{ form.address.value|default:'' }}</textarea>
                     {% if form.address.errors %}
-                        <span class="field-error">{{ form.address.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.address.errors.0 }}</span>
                     {% endif %}
                 </div>
 
-                <div class="form-group">
-                    <label for="{{ form.city.id_for_label }}">Город</label>
-                    {{ form.city }}
+                <!-- City Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.city.id_for_label }}" class="font-semibold text-gray-300 text-sm">Город</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.city.html_name }}" 
+                        id="{{ form.city.id_for_label }}" 
+                        value="{{ form.city.value|default:'' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                        placeholder="Ваш город"
+                    >
                     {% if form.city.errors %}
-                        <span class="field-error">{{ form.city.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.city.errors.0 }}</span>
                     {% endif %}
                 </div>
 
-                <div class="form-group">
-                    <label for="{{ form.postal_code.id_for_label }}">Почтовый индекс</label>
-                    {{ form.postal_code }}
+                <!-- Postal Code Field -->
+                <div class="flex flex-col gap-2">
+                    <label for="{{ form.postal_code.id_for_label }}" class="font-semibold text-gray-300 text-sm">Почтовый индекс</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.postal_code.html_name }}" 
+                        id="{{ form.postal_code.id_for_label }}" 
+                        value="{{ form.postal_code.value|default:'' }}"
+                        class="w-full p-3 bg-[#1A1A1A] border border-gray-700 text-white rounded-lg focus:ring-bronze focus:border-bronze transition duration-200"
+                        placeholder="Индекс"
+                    >
                     {% if form.postal_code.errors %}
-                        <span class="field-error">{{ form.postal_code.errors.0 }}</span>
+                        <span class="text-red-500 text-xs mt-1">{{ form.postal_code.errors.0 }}</span>
                     {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Form Actions -->
-        <div class="form-actions">
-            <a href="{% url 'user:account_details' %}" class="btn-secondary">← Назад</a>
-            <button type="submit" class="btn-primary">Сохранить изменения</button>
+        <div class="flex justify-between items-center pt-6 border-t border-gray-800">
+            <a href="{% url 'user:account_details' %}" class="luxury-btn-outline px-6 py-3 text-white hover:text-bronze transition duration-300">
+                ← Назад
+            </a>
+            <button type="submit" class="luxury-btn px-8 py-3 text-lg">
+                Сохранить изменения
+            </button>
         </div>
     </form>
 </div>
-
-<style>
-    .edit-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-    }
-
-    .edit-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 3rem;
-        padding-bottom: 2rem;
-        border-bottom: 2px solid #e5e5e5;
-    }
-
-    .edit-header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #0a0a0a;
-        margin-bottom: 0.5rem;
-    }
-
-    .edit-header p {
-        color: #666;
-        font-size: 1.1rem;
-    }
-
-    .btn-cancel {
-        padding: 0.875rem 2rem;
-        background: #f5f5f5;
-        color: #1a1a1a;
-        text-decoration: none;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-cancel:hover {
-        background: #e5e5e5;
-    }
-
-    .edit-form {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-    }
-
-    .form-section {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .section-icon {
-        font-size: 2rem;
-    }
-
-    .section-header h2 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #0a0a0a;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .form-group.full-width {
-        grid-column: 1 / -1;
-    }
-
-    .form-group label {
-        font-weight: 600;
-        color: #1a1a1a;
-        font-size: 0.9rem;
-    }
-
-    .form-input,
-    .form-textarea {
-        width: 100%;
-        padding: 0.875rem 1rem;
-        border: 2px solid #e5e5e5;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s;
-        font-family: inherit;
-    }
-
-    .form-input:focus,
-    .form-textarea:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-
-    .form-textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    .form-help {
-        color: #666;
-        font-size: 0.85rem;
-    }
-
-    .field-error {
-        color: #ef4444;
-        font-size: 0.85rem;
-    }
-
-    .error-message {
-        background: #fee2e2;
-        color: #991b1b;
-        padding: 1rem;
-        border-radius: 8px;
-        border-left: 4px solid #ef4444;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-        justify-content: space-between;
-        padding-top: 2rem;
-        border-top: 2px solid #e5e5e5;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        padding: 1rem 2.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        transition: all 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1rem;
-    }
-
-    .btn-primary {
-        background: #6366f1;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-primary:hover {
-        background: #4f46e5;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn-secondary {
-        background: #f5f5f5;
-        color: #1a1a1a;
-        text-decoration: none;
-    }
-
-    .btn-secondary:hover {
-        background: #e5e5e5;
-    }
-
-    @media (max-width: 768px) {
-        .edit-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1.5rem;
-        }
-
-        .edit-header h1 {
-            font-size: 2rem;
-        }
-
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .form-actions {
-            flex-direction: column;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-</style>
 {% endblock %}

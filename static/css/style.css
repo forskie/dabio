@@ -1,0 +1,532 @@
+/* --- PURE MINIMAL LUXURY: High Contrast Monochrome --- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+:root {
+    /* Color Palette: Near Black, Pure White, Subtle Chrome Accent */
+    --color-bg: #0A0A0A;          /* Deep dark background */
+    --color-text: #FFFFFF;        /* Pure white text */
+    --color-accent: #CFCFCF;      /* Chrome/Light Grey Accent */
+    --color-border: #333333;      /* Dark, subtle border */
+
+    /* Typography */
+    --font-title: 'IBM Plex Mono', monospace; /* For stark, intentional titles */
+    --font-body: 'Inter', sans-serif;         /* For clean readability */
+
+    /* Spacing & Geometry */
+    --max-width: 1200px;
+    --spacing-unit: 8rem; /* Increased spacing for luxury feel */
+    --transition: 0.3s ease-out;
+}
+
+/* Base Reset */
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-accent);
+    transition: color var(--transition);
+}
+a:hover {
+    color: var(--color-text);
+}
+
+/* --- Global Layout --- */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.section-padding {
+    padding: var(--spacing-unit) 0;
+}
+
+/* --- Header / Navigation --- */
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.9); /* Subtle transparency */
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo {
+    font-family: var(--font-title);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.nav-links {
+    display: flex;
+    gap: 3.5rem;
+}
+
+.nav-link {
+    font-family: var(--font-title);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--color-text);
+}
+
+
+/* --- Hero Section (Stark Impact) --- */
+.hero {
+    height: 90vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    /* Using a dark placeholder image for texture */
+    background: var(--color-bg) url('https://placehold.co/1920x1080/0A0A0A/CFCFCF?text=E L Y S I A N');
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content {
+    /* Large padding to enforce visual space */
+    padding: 2rem;
+}
+
+.hero-title {
+    font-family: var(--font-title);
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    line-height: 1;
+    color: var(--color-text);
+}
+
+.hero-subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    font-weight: 300;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+/* --- Product Grid & Cards --- */
+.product-grid-header {
+    text-align: center;
+    margin-bottom: 6rem;
+}
+
+.product-grid-header h2 {
+    font-family: var(--font-title);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+
+.product-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: all var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+}
+
+.product-image {
+    width: 100%;
+    height: 450px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 1.5rem;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.product-name {
+    font-family: var(--font-title);
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.product-category {
+    font-size: 0.8rem;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+.product-price {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-accent);
+    margin-top: 1rem;
+}
+
+/* --- Button Style (Minimalist Outline) --- */
+.cta-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-text);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.cta-button:hover {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-color: var(--color-bg);
+}
+
+/* --- Footer --- */
+.footer {
+    background: var(--color-bg);
+    color: var(--color-accent);
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 3rem;
+}
+
+.footer-section h4 {
+    font-family: var(--font-title);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section ul li a {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 300;
+}
+
+.footer-section ul li a:hover {
+    color: var(--color-text);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-border);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* --- Responsive Adjustments (New Mobile-First Structure) --- */
+
+/* MOBILE-FIRST RESPONSIVE – SPACE LUXURY 2025 */
+/* Полностью адаптировано под тёмный космический минимализм */
+
+/* Base (mobile 320–479px) – уже в основном CSS всё работает */
+
+/* ≥ 480px – Small Mobile+ */
+@media (min-width: 480px) {
+  .hero-title {
+    font-size: clamp(4.5rem, 12vw, 10rem);
+  }
+}
+
+/* ≥ 640px – Large Mobile */
+@media (min-width: 640px) {
+  .nav {
+    padding: 0 5vw;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5rem 3rem;
+  }
+
+  .product-image {
+    height: 480px;
+  }
+}
+
+/* ≥ 768px – Tablet */
+@media (min-width: 768px) {
+  .header {
+    height: 100px;
+  }
+
+  .header.scrolled {
+    height: 80px;
+  }
+
+  .nav {
+    padding: 0 6vw;
+  }
+
+  .hero {
+    min-height: 900px;
+  }
+
+  .hero-title {
+    font-size: clamp(5.5rem, 10vw, 11rem);
+  }
+
+  .hero-subtitle {
+    font-size: 1.6rem;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6rem 4rem;
+    padding: 12rem 6vw;
+  }
+
+  .product-detail {
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+  }
+
+  .main-image {
+    aspect-ratio: 4/5;
+  }
+}
+
+/* ≥ 1024px – Small Desktop */
+@media (min-width: 1024px) {
+  .nav {
+    gap: 64px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7rem 4rem;
+  }
+
+  .product-card:hover {
+    transform: translateY(-24px);
+  }
+}
+
+/* ≥ 1280px – Desktop */
+@media (min-width: 1280px) {
+  .nav {
+    max-width: 1600px;
+    padding: 0 8vw;
+  }
+
+  .hero-content {
+    max-width: 1000px;
+  }
+
+  .hero-title {
+    font-size: clamp(7rem, 12vw, 12rem);
+    letter-spacing: -0.06em;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1800px;
+    gap: 8rem 5rem;
+    padding: 14rem 8vw;
+  }
+
+  .product-image {
+    height: 560px;
+  }
+
+  .product-detail {
+    gap: 10rem;
+    padding: 0 8vw;
+  }
+
+  .product-title {
+    font-size: 5rem;
+  }
+
+  .product-price {
+    font-size: 3.5rem;
+  }
+}
+
+/* ≥ 1600px – Large Desktop / 4K */
+@media (min-width: 1600px) {
+  .nav {
+    padding: 0 10vw;
+  }
+
+  .hero {
+    min-height: 1080px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 9rem 6rem;
+    padding: 16rem 10vw;
+  }
+
+  .product-image {
+    height: 620px;
+  }
+
+  .main-image {
+    aspect-ratio: 3/4;
+  }
+}
+
+/* ≥ 1920px – Ultra-wide */
+@media (min-width: 1920px) {
+  .hero-title {
+    font-size: 14rem;
+  }
+
+  .cta-button {
+    padding: 1.4rem 4rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Hover-only devices (убираем лишние эффекты на тач-устройствах */
+@media (hover: hover) and (pointer: fine) {
+  /* .nav-link:hover::after is not defined in the base CSS, keeping the block for future use if added */
+
+  .product-card:hover img {
+    transform: scale(1.08);
+  }
+
+  .cta-button:hover {
+    /* Adapted variables to existing defined colors */
+    background: var(--color-text);
+    color: var(--color-bg);
+    box-shadow: none; /* Removed glow effect as variable is undefined */
+  }
+}
+
+/* Тач-устройства – убираем hover-эффекты */
+@media (hover: none) and (pointer: coarse) {
+  .product-card:active {
+    transform: translateY(-12px);
+    box-shadow: none; /* Removed glow effect as variable is undefined */
+  }
+
+  .cta-button:active {
+    transform: scale(0.96);
+  }
+}
+
+/* Ландшафтная ориентация на мобильных (часто проблема с hero) */
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero {
+    height: 100vh;
+    min-height: 600px;
+  }
+
+  .hero-content {
+    padding-top: 120px;
+  }
+
+  .hero-title {
+    font-size: 6rem !important;
+  }
+}
+
+/* Print – чисто и дорого даже на бумаге */
+@media print {
+  .header,
+  .footer,
+  .cta-button {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .product-card,
+  .product-detail {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #eee;
+  }
+}

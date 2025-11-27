@@ -43,7 +43,6 @@ class CustomUser(AbstractUser):
 
     username = models.CharField(max_length=150, unique=True, null=True, blank=True)
 
-    # Fix reverse accessor clashes
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',

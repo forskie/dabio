@@ -1,0 +1,90 @@
+{% extends "main/base.html" %}
+
+{% block title %}Our Philosophy | Aetheria Archives{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 space-y-20">
+
+    <!-- 1. Hero Section: Core Philosophy -->
+    <div class="text-center space-y-6 pt-10">
+        <h1 class="font-title text-6xl md:text-7xl uppercase tracking-tighter text-white">
+            Beyond the Season
+        </h1>
+        <p class="max-w-4xl mx-auto text-xl text-gray-400 leading-relaxed font-light">
+            Aetheria Archives — это не просто коллекция. Это манифест против эфемерности. Мы создаем артефакты, предназначенные для сохранения, где каждая деталь — это расчет.
+        </p>
+        <div class="flex justify-center pt-4">
+            <a href="{% url 'main:product_list' %}" class="luxury-btn px-8 py-3 text-lg">
+                Исследовать Архив
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. Section: The Philosophy of Permanence -->
+    <div class="grid md:grid-cols-2 gap-12 items-center luxury-card p-8 md:p-12 rounded-lg">
+        <div>
+            <p class="text-sm font-title uppercase tracking-widest text-bronze mb-3">Наше Кредо</p>
+            <h2 class="font-title text-4xl uppercase tracking-tight text-white mb-6">
+                Архитектура Экипировки
+            </h2>
+            <p class="text-gray-300 leading-relaxed space-y-4">
+                <span class="block">Мы верим, что одежда должна быть такой же прочной и функциональной, как и современная архитектура. Наши изделия — это инженерные решения, а не просто текстиль. Каждая линия, каждый шов, каждый материал выбран с учетом долговечности, адаптивности и минимального воздействия на окружающую среду.</span>
+                <span class="block text-gray-400">Вместо того чтобы следовать циклам моды, мы концентрируемся на создании вечных, функциональных форм, которые остаются актуальными вне зависимости от времени.</span>
+            </p>
+        </div>
+        <div class="aspect-square rounded-lg overflow-hidden bg-[#333333]">
+             <!-- Placeholder for a compelling, abstract image of architecture or textile structure -->
+             <img src="https://placehold.co/600x400/2A2A2A/B8860B?text=Minimalist+Design+Blueprint" 
+                  alt="Minimalist design blueprint" 
+                  class="w-full h-full object-cover opacity-80" />
+        </div>
+    </div>
+    
+    <!-- 3. Section: Materials and Craftsmanship -->
+    <div class="space-y-12">
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="font-title text-3xl uppercase tracking-tight text-white border-b border-gray-800 pb-2">
+                Материалы Будущего
+            </h2>
+            <p class="text-gray-400 mt-3">
+                Мы используем только высокоэффективные, регенерированные или технически продвинутые материалы, которые обеспечивают превосходную защиту и комфорт.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Feature Card 1 -->
+            <div class="luxury-card p-6 rounded-xl space-y-3">
+                <div class="text-bronze text-3xl mb-2">✦</div>
+                <h3 class="font-title text-xl text-white">Nano-Fiber Textiles</h3>
+                <p class="text-sm text-gray-400">Сверхлегкие волокна с водоотталкивающими и антибактериальными свойствами. Созданы, чтобы противостоять износу времени.</p>
+            </div>
+
+            <!-- Feature Card 2 -->
+            <div class="luxury-card p-6 rounded-xl space-y-3">
+                <div class="text-bronze text-3xl mb-2">⚙</div>
+                <h3 class="font-title text-xl text-white">Modularity & Repair</h3>
+                <p class="text-sm text-gray-400">Продукты разработаны с модульными компонентами. Мы предлагаем полную поддержку для ремонта и продления срока службы каждого предмета.</p>
+            </div>
+
+            <!-- Feature Card 3 -->
+            <div class="luxury-card p-6 rounded-xl space-y-3">
+                <div class="text-bronze text-3xl mb-2">♻</div>
+                <h3 class="font-title text-xl text-white">Regenerative Sourcing</h3>
+                <p class="text-sm text-gray-400">Приоритет отдается материалам из переработанных источников или тем, чье производство оказывает минимальное влияние на экосистемы.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 4. Section: Call to Action -->
+    <div class="text-center pt-10 pb-4">
+        <h2 class="font-title text-4xl text-white mb-4">Присоединяйтесь к Будущему</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto mb-8">
+            Aetheria Archives — это инвестиция в ваше наследие. Откройте для себя коллекцию, разработанную для того, чтобы пройти испытание временем.
+        </p>
+        <a href="{% url 'main:product_list' %}" class="luxury-btn px-10 py-4 text-xl">
+            Посмотреть все товары
+        </a>
+    </div>
+
+</section>
+{% endblock %}

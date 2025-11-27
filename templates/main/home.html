@@ -1,318 +1,51 @@
+{% extends "main/base.html" %}
 
-{% extends 'main/base.html' %}
-{% load static %}
-{% block title %}Главная - Dabio{% endblock %}
+{% block title %}Home | Aetheria Archives{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-content">
-        <h1 class="hero-title">Стиль, который говорит о вас</h1>
-        <p class="hero-subtitle">Откройте для себя коллекцию современной одежды, созданной для тех, кто ценит качество и индивидуальность</p>
-        <div class="hero-buttons">
-            <a href="#" class="btn-hero-primary">Смотреть коллекцию</a>
-            {% if not user.is_authenticated %}
-                <a href="{% url 'user:register' %}" class="btn-hero-secondary">Присоединиться</a>
-            {% else %}
-                <a href="{% url 'user:profile' %}" class="btn-hero-secondary">Мой профиль</a>
-            {% endif %}
-        </div>
-    </div>
-    <div class="hero-visual">
-        <div class="hero-card"></div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="features">
-    <h2 class="section-title">Почему выбирают Dabio</h2>
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon"></div>
-            <h3>Уникальный дизайн</h3>
-            <p>Эксклюзивные коллекции от талантливых дизайнеров со всего мира</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon"></div>
-            <h3>Премиум качество</h3>
-            <p>Только лучшие материалы и тщательный контроль на каждом этапе</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon"></div>
-            <h3>Быстрая доставка</h3>
-            <p>Доставляем по всему Таджикистану в течение 1-3 дней</p>
-        </div>
-        
-        <div class="feature-card">
-            <div class="feature-icon"></div>
-            <h3>Гарантия возврата</h3>
-            <p>30 дней на возврат без лишних вопросов</p>
-        </div>
+<section class="hero h-[85vh] flex items-center justify-start bg-cover bg-center relative" style="background-image: url('https://placehold.co/1920x900/1C1C1C/444444?text=Elegant+Product+Shot');">
+    <!-- Overlay for better text contrast, subtle gradient -->
+    <div class="absolute inset-0 bg-gradient-to-r from-[--color-charcoal] to-transparent opacity-80"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10 py-20 md:py-0">
+        <!-- New, more refined look -->
+        <p class="font-title text-xl md:text-2xl text-bronze uppercase tracking-widest mb-4">
+            Aetheria Archives
+        </p>
+        <h1 class="font-title text-6xl md:text-7xl uppercase tracking-tight leading-snug text-white max-w-xl">
+            The New Horizon of Permanent Style
+        </h1>
+        <p class="mt-4 text-lg text-gray-400 max-w-md">
+            Discover garments crafted with meticulous precision and designed to transcend ephemeral trends.
+        </p>
+        <a href="{% url 'main:product_list' %}" class="luxury-btn mt-8 px-10 py-3 inline-block">
+            View Collection
+        </a>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta">
-    <div class="cta-content">
-        <h2>Готовы обновить свой гардероб?</h2>
-        <p>Присоединяйтесь к тысячам довольных клиентов Dabio</p>
-        {% if not user.is_authenticated %}
-            <a href="{% url 'user:register' %}" class="btn-cta">Создать аккаунт</a>
-        {% else %}
-            <a href="#" class="btn-cta">Перейти в каталог</a>
-        {% endif %}
+<section class="max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+        <h2 class="font-title text-4xl uppercase tracking-widest text-bronze mb-4">Our Ethos</h2>
+        <p class="text-xl max-w-3xl mx-auto text-gray-300">
+            We transcend trend. Our garments are meticulously crafted with singular devotion to form, function, and enduring quality.
+        </p>
+    </div>
+    
+    <!-- Placeholder for three key features/cards -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="p-8 luxury-card rounded-xl text-center">
+            <h3 class="font-title text-2xl uppercase tracking-widest mb-3 text-white">Precision</h3>
+            <p class="text-gray-400">Every stitch is a calculated measure of excellence, ensuring a perfect fit and finish.</p>
+        </div>
+        <div class="p-8 luxury-card rounded-xl text-center">
+            <h3 class="font-title text-2xl uppercase tracking-widest mb-3 text-white">Permanence</h3>
+            <p class="text-gray-400">Materials sourced for their resilience, creating pieces that defy the constraints of time.</p>
+        </div>
+        <div class="p-8 luxury-card rounded-xl text-center">
+            <h3 class="font-title text-2xl uppercase tracking-widest mb-3 text-white">Presence</h3>
+            <p class="text-gray-400">Garments that command attention through subtle, sophisticated design.</p>
+        </div>
     </div>
 </section>
-
-<style>
-    /* Hero Section */
-    .hero {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        align-items: center;
-        padding: 4rem 0;
-        min-height: 500px;
-    }
-
-    .hero-content {
-        animation: fadeInLeft 0.8s ease;
-    }
-
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: #0a0a0a;
-        line-height: 1.1;
-        margin-bottom: 1.5rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-        color: #666;
-        line-height: 1.6;
-        margin-bottom: 2.5rem;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .btn-hero-primary,
-    .btn-hero-secondary {
-        padding: 1rem 2.5rem;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        text-decoration: none;
-        transition: all 0.3s;
-        display: inline-block;
-    }
-
-    .btn-hero-primary {
-        background: #6366f1;
-        color: white;
-    }
-
-    .btn-hero-primary:hover {
-        background: #4f46e5;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn-hero-secondary {
-        background: white;
-        color: #6366f1;
-        border: 2px solid #6366f1;
-    }
-
-    .btn-hero-secondary:hover {
-        background: #6366f1;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .hero-visual {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        animation: fadeInRight 0.8s ease;
-    }
-
-    .hero-card {
-        width: 400px;
-        height: 400px;
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
-        animation: float 3s ease-in-out infinite;
-    }
-
-    /* Features Section */
-    .features {
-        padding: 6rem 0;
-    }
-
-    .section-title {
-        text-align: center;
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #0a0a0a;
-        margin-bottom: 3rem;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-    }
-
-    .feature-card {
-        background: white;
-        padding: 2.5rem;
-        border-radius: 16px;
-        text-align: center;
-        transition: all 0.3s;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .feature-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-    }
-
-    .feature-icon {
-        font-size: 3.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .feature-card h3 {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #0a0a0a;
-        margin-bottom: 1rem;
-    }
-
-    .feature-card p {
-        color: #666;
-        line-height: 1.6;
-    }
-
-    /* CTA Section */
-    .cta {
-        padding: 6rem 0;
-        text-align: center;
-    }
-
-    .cta-content {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        padding: 4rem 2rem;
-        border-radius: 24px;
-        color: white;
-    }
-
-    .cta-content h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .cta-content p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-        margin-bottom: 2rem;
-    }
-
-    .btn-cta {
-        background: white;
-        color: #6366f1;
-        padding: 1rem 3rem;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s;
-    }
-
-    .btn-cta:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(255,255,255,0.3);
-    }
-
-    /* Animations */
-    @keyframes fadeInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes fadeInRight {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-20px);
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .hero {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 2rem;
-        }
-
-        .hero-title {
-            font-size: 2.5rem;
-        }
-
-        .hero-buttons {
-            justify-content: center;
-        }
-
-        .hero-card {
-            width: 300px;
-            height: 300px;
-            font-size: 6rem;
-        }
-
-        .section-title {
-            font-size: 2rem;
-        }
-
-        .collections {
-            margin: 0 -1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .cta-content h2 {
-            font-size: 2rem;
-        }
-    }
-</style>
 {% endblock %}
